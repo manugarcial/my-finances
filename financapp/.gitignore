@@ -1,0 +1,19 @@
+# Ignore Python bytecode
+*.pyc
+__pycache__/
+
+# Ignore environment variables and dependencies
+.env
+venv/
+.DS_Store
+
+# Ignore logs and temporary files
+*.log
+tmp/
+
+# Ignore IDE/editor settings
+.vscode/
+.idea/
+
+# Ignore files with sensitive data
+./api_keys_data.py
