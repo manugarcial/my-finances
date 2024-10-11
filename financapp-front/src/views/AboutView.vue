@@ -2,10 +2,6 @@
   <div id="app">
     <h1>{{ $t("title") }}</h1>
     <h1>{{ $t("welcome") }}</h1>
-    <div>
-      <p>Click the button to go to the About page:</p>
-      <button @click="goToAbout">Go to About Page</button>
-    </div>
     <ul>
       <li v-for="script in scripts" :key="script.url">
         <button @click="executeScript(script.url)">
@@ -25,7 +21,6 @@
 import axios from "axios";
 
 export default {
-  name: "HomePage",
   data() {
     return {
       scripts: [],
