@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <h1>Python Scripts</h1>
+    <h1>{{ $t('title')}}</h1>
+    <h1>{{ $t('welcome')}}</h1>
     <ul>
       <li v-for="script in scripts" :key="script.url">
         <button @click="executeScript(script.url)">
