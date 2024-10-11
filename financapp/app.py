@@ -66,17 +66,33 @@ def script2():
         data = request.get_json()
         print("Data received:", data) # Log received data
         
+        number = data.get('number')
+        currency = data.get('currency')
+        
         # Here you could use the data to pass to your script if needed
         # For now, just simulate a response
         
         # Example: Call your calculate_irpf.py with the parameters
         # result = subprocess.run(['python3', 'calculate_irpf.py', str(data['quantity'])], capture_output=True, text=True)
+        result = subprocess.run(
+            ['python3', 'calculate_irpf.py', str(number), currency],
+            capture_output=True, text=True
+        )
 
-        # Simulating a response from your calculate_irpf.py
-        output = f"Processed data - Category: {data['category']}, Quantity: {data['quantity']}"
-        print("Net Salary back script")
+        # Check for errors in the script execution
+        if result.returncode != 0:
+            return jsonify({"error": "Script execution failed", "details": result.stderr}), 500
+
+        output = result.stdout
+        print("Script output:", output)
         
         return jsonify({"output": output})
+
+        # Simulating a response from your calculate_irpf.py
+        # output = f"Processed data - Salary: {data['number']}, Currency: {data['currency']}"
+        # print("Net Salary back script")
+        
+        # return jsonify({"output": output})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
