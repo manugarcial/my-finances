@@ -13,7 +13,6 @@ def home():
         "scripts": [
             {"name": "Script 1", "url": "/investing.py"},
             {"name": "Script 2", "url": "/calculate_irpf.py"},
-            # {"name": "Script 3", "url": "/script3"},
         ]
     })
 
@@ -64,10 +63,14 @@ def script2():
     """
     try:
         data = request.get_json()
-        print("Data received:", data) # Log received data
         
-        number = data.get('number')
+        salary = data.get('salary')
         currency = data.get('currency')
+        country_code = data.get('country')
+        region_code = data.get('region')
+        age = data.get('age')
+        anual_rent = data.get('anual_rent')
+        health_discount = data.get('health')
         
         # Here you could use the data to pass to your script if needed
         # For now, just simulate a response
@@ -75,7 +78,7 @@ def script2():
         # Example: Call your calculate_irpf.py with the parameters
         # result = subprocess.run(['python3', 'calculate_irpf.py', str(data['quantity'])], capture_output=True, text=True)
         result = subprocess.run(
-            ['python3', 'calculate_irpf.py', str(number), currency],
+            ['python3', 'calculate_irpf.py', str(salary), currency, country_code, region_code, str(age), str(anual_rent), str(health_discount)],
             capture_output=True, text=True
         )
 
@@ -84,29 +87,10 @@ def script2():
             return jsonify({"error": "Script execution failed", "details": result.stderr}), 500
 
         output = result.stdout
-        print("Script output:", output)
-        
-        return jsonify({"output": output})
 
-        # Simulating a response from your calculate_irpf.py
-        # output = f"Processed data - Salary: {data['number']}, Currency: {data['currency']}"
-        # print("Net Salary back script")
-        
-        # return jsonify({"output": output})
+        return jsonify({"output": output})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-# @app.route('/script2')
-# def script2():
-#     # Replace with actual script logic
-#     result = {"output": "Result of Script 2"}
-#     return jsonify(result)
-
-# @app.route('/script3')
-# def script3():
-#     # Replace with actual script logic
-#     result = {"output": "Result of Script 3"}
-#     return jsonify(result)
 
 if __name__ == '__main__':
     app.run(debug=True)
