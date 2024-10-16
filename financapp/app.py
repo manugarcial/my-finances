@@ -11,13 +11,14 @@ swagger = Swagger(app)
 def home():
     return jsonify({
         "scripts": [
-            {"name": "Script 1", "url": "/investing.py"},
-            {"name": "Script 2", "url": "/calculate_irpf.py"},
+            {"name": "investments", "url": "/investing.py"},
+            {"name": "irpf", "url": "/calculate_irpf.py"},
+            {"name": "mortgage", "url": "/mortgage.py"},
         ]
     })
 
 @app.route('/investing.py')
-def script1():
+def investments():
     """
     Home endpoint to return available scripts.
     ---
@@ -34,7 +35,7 @@ def script1():
         return jsonify({"error": str(e)}), 500
     
 @app.route('/calculate_irpf', methods=['POST'])
-def script2():
+def irpf():
     """
     Calculate IRPF based on the provided data.
     ---
@@ -76,7 +77,6 @@ def script2():
         # For now, just simulate a response
         
         # Example: Call your calculate_irpf.py with the parameters
-        # result = subprocess.run(['python3', 'calculate_irpf.py', str(data['quantity'])], capture_output=True, text=True)
         result = subprocess.run(
             ['python3', 'calculate_irpf.py', str(salary), currency, country_code, region_code, str(age), str(anual_rent), str(health_discount)],
             capture_output=True, text=True
@@ -89,6 +89,57 @@ def script2():
         output = result.stdout
 
         return jsonify({"output": output})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/calculate_mortgage', methods=['POST'])
+def mortgage():
+    try:
+        data = request.get_json()
+        
+        capital = data.get('capital')
+        interest = data.get('interest')
+        mortgage_years = data.get('mortgage_years')
+        additional_yearly_payment = data.get('additional_yearly_payment')
+        start_payment_year = data.get('start_payment_year')
+        purchase_tax = data.get('purchase_tax')
+        sell_price = data.get('sell_price')
+        bank_finance_percentage = data.get('bank_finance_percentage')
+        agency_commission = data.get('agency_commission')
+
+        print(capital)
+        print(interest)
+        print(mortgage_years)
+        print(additional_yearly_payment)
+        print(start_payment_year)
+        print(purchase_tax)
+        print(sell_price)
+        print(bank_finance_percentage)
+        print(agency_commission)
+        
+        # Here you could use the data to pass to your script if needed
+        # For now, just simulate a response
+
+        result = subprocess.run(
+            ['python3', 'mortgage.py', str(capital), str(interest), str(mortgage_years), str(additional_yearly_payment), str(start_payment_year), str(purchase_tax), str(sell_price), str(bank_finance_percentage), str(agency_commission)],
+            capture_output=True, text=True
+        )
+        print("------")
+        print(result.returncode)
+        print(result.stdout)
+        print("------")
+
+        # Check for errors in the script execution
+        # if result.returncode != 0:
+        #     return jsonify({"error": "Script execution failed", "details": result.stderr}), 500
+
+        # output = result.stdout
+
+        # print("output")
+        # print(output)
+        return str(0)
+
+        # return jsonify({"output": output})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

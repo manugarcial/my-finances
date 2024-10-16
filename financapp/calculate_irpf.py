@@ -105,7 +105,7 @@ def calculate_irpf(salary, country_code, region_code, age, rent, health_discount
 
 if __name__ == "__main__":
     if len(sys.argv) != 8:
-        print("Usage: calculate_irpf.py <salary> <currency>")
+        print("Usage: calculate_irpf.py")
         sys.exit(1)
 
     salary = sys.argv[1]
