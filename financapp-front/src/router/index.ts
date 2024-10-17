@@ -10,20 +10,27 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/about",
     name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+    component: () => import("../views/AboutView.vue"),
   },
   {
     path: "/net-salary",
     name: "net-salary",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/NetSalaryView.vue"),
+    component: () => import("../views/NetSalaryView.vue"),
+  },
+  {
+    path: "/mortgage",
+    name: "mortgage",
+    component: () => import("../views/MortgageView.vue"),
+  },
+  {
+    path: "/stocks",
+    name: "stocks",
+    component: () => import("../views/StocksView.vue"),
+  },
+  {
+    path: "/global-economy-data",
+    name: "global-economy-data",
+    component: () => import("../views/GlobalEconomyDataView.vue"),
   },
 ];
 

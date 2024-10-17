@@ -3,7 +3,10 @@
   <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link> |
-    <router-link to="/net-salary">Net Salary</router-link>
+    <router-link to="/net-salary">Net Salary</router-link> |
+    <router-link to="/mortgage">Mortgage</router-link> |
+    <router-link to="/stocks">Stocks</router-link> |
+    <router-link to="/global-economy-data">Global Economy Data</router-link>
   </nav>
   <router-view />
 </template>

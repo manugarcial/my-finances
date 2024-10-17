@@ -106,16 +106,6 @@ def mortgage():
         sell_price = data.get('sell_price')
         bank_finance_percentage = data.get('bank_finance_percentage')
         agency_commission = data.get('agency_commission')
-
-        print(capital)
-        print(interest)
-        print(mortgage_years)
-        print(additional_yearly_payment)
-        print(start_payment_year)
-        print(purchase_tax)
-        print(sell_price)
-        print(bank_finance_percentage)
-        print(agency_commission)
         
         # Here you could use the data to pass to your script if needed
         # For now, just simulate a response
@@ -124,22 +114,15 @@ def mortgage():
             ['python3', 'mortgage.py', str(capital), str(interest), str(mortgage_years), str(additional_yearly_payment), str(start_payment_year), str(purchase_tax), str(sell_price), str(bank_finance_percentage), str(agency_commission)],
             capture_output=True, text=True
         )
-        print("------")
-        print(result.returncode)
         print(result.stdout)
-        print("------")
 
         # Check for errors in the script execution
-        # if result.returncode != 0:
-        #     return jsonify({"error": "Script execution failed", "details": result.stderr}), 500
+        if result.returncode != 0:
+            return jsonify({"error": "Script execution failed", "details": result.stderr}), 500
 
-        # output = result.stdout
+        output = result.stdout
 
-        # print("output")
-        # print(output)
-        return str(0)
-
-        # return jsonify({"output": output})
+        return jsonify({"output": output})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
