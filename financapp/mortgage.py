@@ -31,9 +31,9 @@ def mortgage_cancelation(principal, start_extra_payment_year, additional_payment
     return mortgage_results
 
 if __name__ == "__main__":
-    # if len(sys.argv) != 10:
-    #     print("Usage: amortizacion_con_cancelacion.py")
-    #     sys.exit(1)
+    if len(sys.argv) != 10:
+        print("Usage: amortizacion_con_cancelacion.py")
+        sys.exit(1)
 
     # Datos iniciales
     principal = int(sys.argv[1])  # capital inicial de la hipoteca

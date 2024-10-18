@@ -48,3 +48,6 @@ stock_dataframe['RSI'] = calculate_rsi(stock_dataframe)
 RSI_list = stock_dataframe.values.tolist()
 rsi_evaluation = evaluate_rsi(RSI_list[-1][1])
 print('RSI evaluation: ', rsi_evaluation)
+
+if __name__ == "__main__":
+    print("hello")

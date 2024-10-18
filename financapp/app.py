@@ -11,14 +11,15 @@ swagger = Swagger(app)
 def home():
     return jsonify({
         "scripts": [
-            {"name": "investments", "url": "/investing.py"},
+            # {"name": "investments", "url": "/investing.py"},
             {"name": "irpf", "url": "/calculate_irpf.py"},
             {"name": "mortgage", "url": "/mortgage.py"},
+            {"name": "stocks", "url": "/stocks_investment.py"},
         ]
     })
 
-@app.route('/investing.py')
-def investments():
+@app.route('/stocks_investment')
+def stocks():
     """
     Home endpoint to return available scripts.
     ---
@@ -28,9 +29,10 @@ def investments():
     """
     try:
         # You can use subprocess to run the script
-        result = subprocess.run(['python3', 'investing.py'], capture_output=True, text=True)
+        result = subprocess.run(['python3', 'stocks_investment.py'], capture_output=True, text=True)
         print("Script output:", result.stdout)
-        return jsonify({"output": result.stdout})
+        # return jsonify({"output": result.stdout})
+        return "hola"
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
