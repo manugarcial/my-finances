@@ -21,5 +21,8 @@ my_18_stock_market_list = {
     'MIB':'https://en.wikipedia.org/wiki/FTSE_MIB'
 }
 
-my_stocks_list = ['AAPL','ORCL','COST','TSLA','ORLY','MSI','HWKN','MCO','META','AMZN','NVDA']
+# my_stocks_list = ['AAPL','ORCL','COST','TSLA','ORLY','MSI','HWKN','MCO','META','AMZN','NVDA']
+my_stocks_list = ['AAPL','ORCL','COST']
+my_stocks_list_money_invested = [10, 30, 35]
+my_stocks_list_purchase_timestamp = ['1729090040','1729003640','1728917240']
 my_stocks_watchlist = ['ADBE','ABNB','ASML','COST','INTC','MSFT','PANW','PEP','KO','AMD']

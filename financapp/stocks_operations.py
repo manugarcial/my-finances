@@ -49,18 +49,18 @@ def stock_real_time_values(stock):
     new_keys = ['Current $', 'Change', 'Percentage change', 'Highest today', 'Lowest today', 'Open $ today', 'Prev close $', 'Timestamp']
     parsed_stock_data = dict(zip(new_keys, stock_data.values()))
 
-    if(parsed_stock_data['Percentage change'] > 5):
-        print(BLUE + 'Stock: ' + stock + ' ' + str(parsed_stock_data) + RESET)
-    elif(parsed_stock_data['Percentage change'] > 0):
-        print(GREEN + 'Stock: ' + stock + ' ' + str(parsed_stock_data) + RESET)
-    elif(parsed_stock_data['Percentage change'] < 0 and parsed_stock_data['Percentage change'] > -5):
-        print(ORANGE + 'Stock: ' + stock + ' ' + str(parsed_stock_data) + RESET)
-    elif(parsed_stock_data['Percentage change'] < -5):
-        print(RED + 'Stock: ' + stock + ' ' + str(parsed_stock_data) + RESET)
+    # if(parsed_stock_data['Percentage change'] > 5):
+    #     print(BLUE + 'Stock: ' + stock + ' ' + str(parsed_stock_data) + RESET)
+    # elif(parsed_stock_data['Percentage change'] > 0):
+    #     print(GREEN + 'Stock: ' + stock + ' ' + str(parsed_stock_data) + RESET)
+    # elif(parsed_stock_data['Percentage change'] < 0 and parsed_stock_data['Percentage change'] > -5):
+    #     print(ORANGE + 'Stock: ' + stock + ' ' + str(parsed_stock_data) + RESET)
+    # elif(parsed_stock_data['Percentage change'] < -5):
+    #     print(RED + 'Stock: ' + stock + ' ' + str(parsed_stock_data) + RESET)
+    # else:
+    #     print('Stock: ' + stock + ' ' + str(parsed_stock_data))
 
-    else:
-        print('Stock: ' + stock + ' ' + str(parsed_stock_data))
-    return 
+    return str(parsed_stock_data)
 
 # Stock Historical values
 def stock_historical_values(stock, period_data, show=False):
@@ -69,9 +69,13 @@ def stock_historical_values(stock, period_data, show=False):
     close_historical_data = historical_stock_data['Close'].values
     date_historical_data = historical_stock_data.index
 
-    if(show): stock_historical_data_graph(stock, close_historical_data, date_historical_data)                 
+    if(show): stock_historical_data_graph(stock, close_historical_data, date_historical_data)
 
-    return close_historical_data
+    stock_history = {
+        "stock_historic_close_data": close_historical_data
+    }           
+
+    return stock_history
 
 
 # Show historical data in graph using plot library
@@ -191,4 +195,3 @@ def evaluate_rsi(rsi_number):
     elif(rsi_number > 50): return 1
     elif(rsi_number > 40): return 1.1
     else: return 1.2
-    
