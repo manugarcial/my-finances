@@ -60,7 +60,7 @@ def stock_real_time_values(stock):
     # else:
     #     print('Stock: ' + stock + ' ' + str(parsed_stock_data))
 
-    return str(parsed_stock_data)
+    return parsed_stock_data
 
 # Stock Historical values
 def stock_historical_values(stock, period_data, show=False):
