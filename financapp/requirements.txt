@@ -23,7 +23,7 @@ defer==1.0.4
 distro==1.9.0
 distro-info==1.0
 dnspython==2.6.1
-duplicity==2.1.4
+# duplicity==2.1.4
 fasteners==0.18
 finnhub-python==2.4.20
 flasgger==0.9.7.1
