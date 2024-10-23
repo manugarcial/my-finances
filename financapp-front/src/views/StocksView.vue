@@ -26,8 +26,9 @@ export default {
     };
   },
   created() {
+    const apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
     axios
-      .get("http://127.0.0.1:5000/")
+      .get(`${apiBaseUrl}`)
       .then((response) => {
         this.scripts = response.data.scripts;
       })
@@ -42,8 +43,9 @@ export default {
   methods: {
     async fetchStocks() {
       try {
+        const apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
         // Sending data to backend using axios
-        const res = await axios.get("http://127.0.0.1:5000/stocks_investment");
+        const res = await axios.get(`${apiBaseUrl}/stocks_investment`);
         // Save response to display
         this.response = res.data.output;
         console.log("response");

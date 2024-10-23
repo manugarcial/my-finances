@@ -282,8 +282,9 @@ export default {
     },
   },
   created() {
+    const apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
     axios
-      .get("http://127.0.0.1:5000/")
+      .get(`${apiBaseUrl}`)
       .then((response) => {
         this.scripts = response.data.scripts;
       })
@@ -294,9 +295,10 @@ export default {
   methods: {
     async submitForm() {
       try {
+        const apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
         // Sending data to backend using axios
         const res = await axios.post(
-          "http://127.0.0.1:5000/calculate_irpf",
+          `${apiBaseUrl}/calculate_irpf`,
           this.formData
         );
         // Save response to display

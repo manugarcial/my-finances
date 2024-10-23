@@ -190,8 +190,10 @@ export default {
     // },
   },
   created() {
+    // Use VUE_APP_API_BASE_URL from environment variables
+    const apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
     axios
-      .get("http://127.0.0.1:5000/")
+      .get(`${apiBaseUrl}`)
       .then((response) => {
         this.scripts = response.data.scripts;
       })
@@ -202,9 +204,11 @@ export default {
   methods: {
     async submitForm() {
       try {
+        const apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
+        console.log(apiBaseUrl);
         // Sending data to backend using axios
         const res = await axios.post(
-          "http://127.0.0.1:5000/calculate_mortgage",
+          `${apiBaseUrl}/calculate_mortgage`,
           this.formData
         );
         // Save response to display
