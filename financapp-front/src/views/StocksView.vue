@@ -1,6 +1,9 @@
 <template>
-  <div id="app">
+  <div id="stocks">
     <h1>{{ $t("Stocks") }}</h1>
+    <div v-if="response">
+      <div>{{ response }}</div>
+    </div>
     <router-view></router-view>
   </div>
 </template>
@@ -16,7 +19,7 @@ export default {
   data() {
     return {
       scripts: [],
-      output: "",
+      // output: "",
       response: null,
       stocks_list: [],
       stock_wallet: {},
@@ -47,13 +50,12 @@ export default {
         // Sending data to backend using axios
         const res = await axios.get(`${apiBaseUrl}/stocks_investment`);
         // Save response to display
-        this.response = res.data.output;
+        this.response = res.data.wallet;
         console.log("response");
-        console.log(res);
         console.log("--------------------------");
-        console.log(res.data);
+        console.log("wallet value");
+        console.log(res.data.wallet);
         console.log("--------------------------");
-        console.log(res.data.output);
         // let responseString = this.response;
         // let fixedJsonString;
         // let jsonObject;
@@ -84,7 +86,7 @@ export default {
 </script>
 
 <style>
-#app {
+#stocks {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

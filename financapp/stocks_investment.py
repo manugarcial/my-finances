@@ -39,7 +39,7 @@ my_index_dict = dataframe_into_dict(my_index_dataframe)
 # print(matched_keys)
 
 # stock_values = stocks_values(my_stocks_list,'historical_and_real_time', study_period, False)
-compound_stocks(my_stocks_list_data)
+# compound_stocks(my_stocks_list_data)
 
 # days_to_check_investing_options = 15
 # last_stock_days_values = stock_values[-days_to_check_investing_options:]
@@ -50,5 +50,11 @@ compound_stocks(my_stocks_list_data)
 # rsi_evaluation = evaluate_rsi(RSI_list[-1][1])
 # print('RSI evaluation: ', rsi_evaluation)
 
+# Example function to call compound_stocks
+def main():
+    wallet_data = compound_stocks(my_stocks_list_data)
+    print(wallet_data)
+
+# Run the main function
 if __name__ == "__main__":
-    print("hello")
+    main()

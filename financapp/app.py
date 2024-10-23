@@ -30,9 +30,7 @@ def stocks():
     try:
         # You can use subprocess to run the script
         result = subprocess.run(['python3', 'stocks_investment.py'], capture_output=True, text=True)
-        print("Script output:", result.stdout)
-        # return jsonify({"output": result.stdout})
-        return "hola"
+        return jsonify({"wallet": result.stdout})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
