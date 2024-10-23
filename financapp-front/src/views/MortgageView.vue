@@ -393,6 +393,10 @@ h1.title {
     grid-template-columns: 1fr; /* Stack form and response on top of each other */
   }
 
+  .form-results {
+    flex-direction: column;
+  }
+
   .title {
     font-size: 20px;
   }
@@ -405,6 +409,15 @@ h1.title {
   .submit-button {
     font-size: 14px;
     padding: 10px;
+  }
+
+  .form-container {
+    width: calc(100% - 40px);
+    margin-bottom: 20px;
+  }
+
+  .response-container {
+    width: calc(100% - 40px);
   }
 }
 </style>
