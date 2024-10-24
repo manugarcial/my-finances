@@ -23,6 +23,7 @@ export default {
       response: null,
       stocks_list: [],
       stock_wallet: {},
+      refreshInterval: null,
       boxDataItems: [
         // { number: 10, text: "IRPF Number" },
       ],
@@ -40,8 +41,19 @@ export default {
       });
   },
   async mounted() {
-    // Call the method to fetch data when the page loads
+    // Initial fetch when component is mounted
     await this.fetchStocks();
+
+    // Set interval to refresh data every 5 minutes (300,000 milliseconds)
+    this.refreshInterval = setInterval(() => {
+      this.fetchStocks();
+    }, 300000); // 5 minutes in milliseconds
+  },
+  beforeDestroy() {
+    // Clear the interval when the component is destroyed to avoid memory leaks
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval);
+    }
   },
   methods: {
     async fetchStocks() {
