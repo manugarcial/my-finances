@@ -78,7 +78,6 @@ export default {
         // Save response to display
         this.response = res.data.wallet;
         this.stockItems = [];
-        
         let responseString = this.response;
         let fixedJsonString;
         let jsonObject;
