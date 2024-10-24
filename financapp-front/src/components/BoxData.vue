@@ -2,7 +2,7 @@
   <div class="box-data-container">
     <h2>{{ text }}</h2>
     <div class="output">
-      <p><strong>Value:</strong> {{ number }}</p>
+      <p>{{ number }}</p>
     </div>
   </div>
 </template>
