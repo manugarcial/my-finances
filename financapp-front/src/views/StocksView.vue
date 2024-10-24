@@ -61,7 +61,7 @@ export default {
     // Set interval to refresh data every 5 minutes (300,000 milliseconds)
     this.refreshInterval = setInterval(() => {
       this.fetchStocks();
-    }, 300000); // 5 minutes in milliseconds
+    }, 60000); // 5 minutes in milliseconds
   },
   beforeUnmount() {
     // Clear the interval when the component is destroyed to avoid memory leaks
@@ -77,6 +77,8 @@ export default {
         const res = await axios.get(`${apiBaseUrl}/stocks_investment`);
         // Save response to display
         this.response = res.data.wallet;
+        this.stockItems = [];
+        
         let responseString = this.response;
         let fixedJsonString;
         let jsonObject;
