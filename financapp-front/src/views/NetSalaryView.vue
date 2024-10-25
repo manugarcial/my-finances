@@ -163,12 +163,10 @@ export default {
           { value: "cl", name: "Castilla y León" },
           { value: "cm", name: "Castilla-La Mancha" },
           { value: "ct", name: "Cataluña" },
-          { value: "ce", name: "Ceuta" },
-          { value: "vc", name: "C.Valenciana" },
+          { value: "vc", name: "C. Valenciana" },
           { value: "ex", name: "Extremadura" },
           { value: "ga", name: "Galicia" },
           { value: "md", name: "Madrid" },
-          { value: "ml", name: "Melilla" },
           { value: "mu", name: "Murcia" },
           { value: "na", name: "Navarra" },
           { value: "pv", name: "País Vasco" },
@@ -315,14 +313,14 @@ export default {
           console.error("Error parsing JSON after fixing quotes:", error);
           return null;
         }
-        this.boxDataItems[0].number = jsonObject["anual irpf"];
-        this.boxDataItems[1].number = jsonObject["net salary per month"];
-        this.boxDataItems[2].number = jsonObject["irpf salary percentage"];
-        this.boxDataItems[3].number = jsonObject["mortgage loan / house rent"];
-        this.boxDataItems[4].number = jsonObject["basic spendings"];
-        this.boxDataItems[5].number = jsonObject["personal spendings"];
-        this.boxDataItems[6].number = jsonObject["savings"];
-        this.boxDataItems[7].number = jsonObject["investments"];
+        this.boxDataItems[0].number = jsonObject["annual_irpf"];
+        this.boxDataItems[1].number = jsonObject["monthly_net_salary"];
+        this.boxDataItems[2].number = jsonObject["irpf_salary_percentage"];
+        this.boxDataItems[3].number = jsonObject["mortgage_or_rent_budget"];
+        this.boxDataItems[4].number = jsonObject["basic_expenses_budget"];
+        this.boxDataItems[5].number = jsonObject["personal_expenses_budget"];
+        this.boxDataItems[6].number = jsonObject["savings_budget"];
+        this.boxDataItems[7].number = jsonObject["investment_budget"];
       } catch (error) {
         console.error("Error submitting form:", error);
         this.response = "An error occurred while submitting the form.";
@@ -332,7 +330,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #net_salary {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

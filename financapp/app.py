@@ -64,6 +64,8 @@ def irpf():
     """
     try:
         data = request.get_json()
+        # print("data")
+        # print(data)
         
         salary = data.get('salary')
         currency = data.get('currency')
@@ -72,21 +74,32 @@ def irpf():
         age = data.get('age')
         anual_rent = data.get('anual_rent')
         health_discount = data.get('health')
+
+        # print("hello")
+        # print(region_code)
         
         # Here you could use the data to pass to your script if needed
         # For now, just simulate a response
         
         # Example: Call your calculate_irpf.py with the parameters
         result = subprocess.run(
-            ['python3', 'calculate_irpf.py', str(salary), currency, country_code, region_code, str(age), str(anual_rent), str(health_discount)],
+            ['python3', 'calculate_irpf.py', str(salary), currency, country_code, region_code, str(anual_rent), str(health_discount)],
             capture_output=True, text=True
         )
 
+        # print("result")
+        # print(result.returncode)
+        # print(result)
+
         # Check for errors in the script execution
-        if result.returncode != 0:
-            return jsonify({"error": "Script execution failed", "details": result.stderr}), 500
+        # if result.returncode != 0:
+        #     return jsonify({"error": "Script execution failed", "details": result.stderr}), 500
+        
+        # print("hola")
 
         output = result.stdout
+
+        print(result.stdout)
 
         return jsonify({"output": output})
     except Exception as e:

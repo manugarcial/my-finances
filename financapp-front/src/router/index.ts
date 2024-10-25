@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import SingleStockView from "../views/SingleStockView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -7,11 +8,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "home",
     component: HomeView,
   },
-  {
-    path: "/about",
-    name: "about",
-    component: () => import("../views/AboutView.vue"),
-  },
+  // {
+  //   path: "/about",
+  //   name: "about",
+  //   component: () => import("../views/AboutView.vue"),
+  // },
   {
     path: "/net-salary",
     name: "net-salary",
@@ -28,9 +29,23 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/StocksView.vue"),
   },
   {
+    path: "/stocks-search",
+    name: "stocks-search",
+    component: () => import("../views/StockSearchView.vue"),
+  },
+  {
     path: "/global-economy-data",
     name: "global-economy-data",
     component: () => import("../views/GlobalEconomyDataView.vue"),
+  },
+  {
+    path: "/item/:ticker",
+    component: SingleStockView,
+    props: true,
+  },
+  {
+    path: "/:catchAll(.*)",
+    redirect: "/",
   },
 ];
 

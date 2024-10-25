@@ -9,11 +9,11 @@ from scipy.signal import find_peaks
 from api_keys_data import finnhub_api_key
 
 # ANSI color codes
-RED = "\033[31m"
-GREEN = "\033[32m"
-BLUE = "\033[36m"
-ORANGE = "\033[38;5;214m"
-RESET = "\033[0m"
+# RED = "\033[31m"
+# GREEN = "\033[32m"
+# BLUE = "\033[36m"
+# ORANGE = "\033[38;5;214m"
+# RESET = "\033[0m"
 
 my_finnhub_api_key = finnhub_api_key
 finnhub_client = finnhub.Client(api_key=my_finnhub_api_key)
@@ -48,17 +48,6 @@ def stock_real_time_values(stock):
     stock_data = finnhub_client.quote(stock)
     new_keys = ['Current $', 'Change', 'Percentage change', 'Highest today', 'Lowest today', 'Open $ today', 'Prev close $', 'Timestamp']
     parsed_stock_data = dict(zip(new_keys, stock_data.values()))
-
-    # if(parsed_stock_data['Percentage change'] > 5):
-    #     print(BLUE + 'Stock: ' + stock + ' ' + str(parsed_stock_data) + RESET)
-    # elif(parsed_stock_data['Percentage change'] > 0):
-    #     print(GREEN + 'Stock: ' + stock + ' ' + str(parsed_stock_data) + RESET)
-    # elif(parsed_stock_data['Percentage change'] < 0 and parsed_stock_data['Percentage change'] > -5):
-    #     print(ORANGE + 'Stock: ' + stock + ' ' + str(parsed_stock_data) + RESET)
-    # elif(parsed_stock_data['Percentage change'] < -5):
-    #     print(RED + 'Stock: ' + stock + ' ' + str(parsed_stock_data) + RESET)
-    # else:
-    #     print('Stock: ' + stock + ' ' + str(parsed_stock_data))
 
     return parsed_stock_data
 
@@ -193,5 +182,5 @@ def evaluate_rsi(rsi_number):
     if(rsi_number > 70): return 0.8
     elif(rsi_number > 60): return 0.9
     elif(rsi_number > 50): return 1
-    elif(rsi_number > 40): return 1.1
-    else: return 1.2
+    elif(rsi_number > 40): return 0.9
+    else: return 0.8

@@ -1,6 +1,17 @@
 <template>
   <div id="stocks">
     <h1>{{ $t("Stocks") }}</h1>
+    <div class="wallet response-container">
+      <div v-for="(item, index) in wallet" :key="index" class="box-data-item">
+        {{ item["wallet_invested_value"] }}
+        {{ item["transactions_value"] }}
+        {{ item["wallet_real_value_now_without_transactions"] }}
+        {{ item["wallet_real_value_now_with_transactions"] }}
+        {{ item["wallet_per_change_no_transactions"] }}
+        {{ item["wallet_per_change_with_transactions"] }}
+      </div>
+    </div>
+    <br />
     <div class="stocks-items response-container">
       <!-- Loop through data to create multiple instances of DataDisplay component -->
       <div
@@ -41,6 +52,7 @@ export default {
       stock_wallet: {},
       refreshInterval: null,
       stockItems: [],
+      wallet: [],
     };
   },
   created() {
@@ -90,6 +102,17 @@ export default {
           console.error("Error parsing JSON after fixing quotes:", error);
           return null;
         }
+        this.wallet = [];
+        // let wallet_info = [];
+        for (const [key, value] of Object.entries(jsonObject["wallet_value"])) {
+          let wallet_data = {
+            [key]: value,
+          };
+          // wallet_info.push(wallet_data);
+          this.wallet.push(wallet_data);
+        }
+
+        // this.wallet.push(wallet_info);
 
         for (const [key, value] of Object.entries(jsonObject["stocks_list"])) {
           let stock_change_info = {
@@ -108,7 +131,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #stocks {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -219,11 +242,6 @@ h1.title {
   .main-container {
     grid-template-columns: 1fr; /* Stack form and response on top of each other */
   }
-
-  .form-results {
-    flex-direction: column;
-  }
-
   .title {
     font-size: 20px;
   }
@@ -245,6 +263,7 @@ h1.title {
 
   .response-container {
     width: calc(100% - 40px);
+    flex-direction: column;
   }
 }
 </style>
