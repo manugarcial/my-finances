@@ -8,13 +8,6 @@ from datetime import datetime
 from scipy.signal import find_peaks
 from api_keys_data import finnhub_api_key
 
-# ANSI color codes
-# RED = "\033[31m"
-# GREEN = "\033[32m"
-# BLUE = "\033[36m"
-# ORANGE = "\033[38;5;214m"
-# RESET = "\033[0m"
-
 my_finnhub_api_key = finnhub_api_key
 finnhub_client = finnhub.Client(api_key=my_finnhub_api_key)
 
@@ -59,10 +52,9 @@ def stock_historical_values(stock, period_data, show=False):
     date_historical_data = historical_stock_data.index
 
     if(show): stock_historical_data_graph(stock, close_historical_data, date_historical_data)
-
     stock_history = {
-        "stock_historic_close_data": close_historical_data
-    }           
+        "stock_historic_close_data": close_historical_data.tolist()
+    }            
 
     return stock_history
 
@@ -143,40 +135,47 @@ def surprise_percentage(company_code, quarters_limit = 5):
     # Check if it is positive or negative
     is_positive = most_recent > 0
 
-    # Return the trend and the status of the most recent value
-    return {
-        'trend': trend,
-        'most_recent_is_positive': is_positive,
-        'most_recent_surprisePercent': most_recent
+    if is_positive == True:
+        is_positive = 1
+    else:
+        is_positive = 0
+
+    data = {
+        'company_surprise_index': {
+            "trend": trend,
+            "most_recent_is_positive": is_positive,
+            "most_recent_surprisePercent": most_recent
+        }
     }
 
+    # Return the trend and the status of the most recent value
+    return data
+
 # Funtion to calculate RSI (Relative Strengh Index)
-def calculate_rsi(data, period=14):
-    """
-    Function to calculate the Relative Strength Index (RSI) for a given time series.
+def calculate_rsi(closing_prices, period=14):
+    # Calculate price changes
+    deltas = numpy.diff(closing_prices)
     
-    :param data: A pandas DataFrame or Series with price data (usually closing prices).
-    :param period: The number of periods to use for RSI calculation (default is 14).
-    :return: A pandas Series with the RSI values.
-    """
-    # Calculate the price differences
-    delta = data.diff()
-    
-    # Separate the positive gains (ups) and negative losses (downs)
-    gain = (delta.where(delta > 0, 0))  # Only positive changes
-    loss = (-delta.where(delta < 0, 0))  # Only negative changes (inverted to be positive)
-    
-    # Calculate the rolling mean (exponential moving average) for gain and loss
-    avg_gain = gain.rolling(window=period, min_periods=1).mean()
-    avg_loss = loss.rolling(window=period, min_periods=1).mean()
+    # Separate gains and losses
+    gains = numpy.where(deltas > 0, deltas, 0)
+    losses = numpy.where(deltas < 0, -deltas, 0)
 
-    # Calculate the Relative Strength (RS)
-    rs = avg_gain / avg_loss
-    
-    # Calculate RSI
-    rsi = 100 - (100 / (1 + rs))
+    # Calculate the initial average gain and loss
+    avg_gain = numpy.mean(gains[:period])
+    avg_loss = numpy.mean(losses[:period])
 
-    return rsi
+    # Calculate RSI using rolling averages
+    rsi = []
+    for i in range(period, len(closing_prices) - 1):
+        avg_gain = ((avg_gain * (period - 1)) + gains[i]) / period
+        avg_loss = ((avg_loss * (period - 1)) + losses[i]) / period
+
+        # Compute RS and RSI
+        rs = avg_gain / avg_loss if avg_loss != 0 else 0
+        rsi_value = 100 - (100 / (1 + rs))
+        rsi.append(rsi_value)
+
+    return rsi[-1] if rsi else None  # Return the latest RSI value
 
 def evaluate_rsi(rsi_number):
     if(rsi_number > 70): return 0.8

@@ -205,7 +205,6 @@ export default {
     async submitForm() {
       try {
         const apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
-        console.log(apiBaseUrl);
         // Sending data to backend using axios
         const res = await axios.post(
           `${apiBaseUrl}/calculate_mortgage`,
@@ -213,7 +212,9 @@ export default {
         );
         // Save response to display
         this.response = res.data.output;
+        console.log("Mi respuesta en JSON");
         console.log(this.response);
+        console.log(typeof this.response);
         let responseString = this.response;
         let fixedJsonString;
         let jsonObject;
@@ -222,14 +223,11 @@ export default {
           fixedJsonString = responseString.replace(/'/g, '"');
           // Attempt to parse the fixed JSON string
           jsonObject = JSON.parse(fixedJsonString);
+          console.log(jsonObject);
         } catch (error) {
           console.error("Error parsing JSON after fixing quotes:", error);
           return null;
         }
-
-        // {'mortgage_years': 11, 'mortgage_months': 1, 'total_loan_value': 150187.08, 'sell_buy_tax': 15200.0, 'minimal_money_needed': 71250.0,
-        // 'annual_taxes': 525.0, 'total_mortgage_value_no_cancelations': 236637.08, 'total_mortgage_value_with_cancelations': 219032.94,
-        // 'minimun_resell_price': 245754.96, 'resell_percentage_rise': 29.35}
 
         this.boxDataItems[0].number = jsonObject["mortgage_years"];
         this.boxDataItems[1].number = jsonObject["mortgage_months"];

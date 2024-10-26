@@ -45,11 +45,11 @@ def stocks_values(array, operation, period = '1mo', show_plot = False):
             stock_data["stock_historical_data"] = stock_historical_values(array[counter], period, show_plot)
         elif(operation == 'real_time'):
             stock_data["stock_ticker"] = array[counter]
-            stock_data["stock_real_time_data"] = str(stock_real_time_values(array[counter]))
+            stock_data["stock_real_time_data"] = stock_real_time_values(array[counter])
         elif(operation == 'historical_and_real_time'):
             stock_data["stock_ticker"] = array[counter]
             stock_data["stock_historical_data"] = stock_historical_values(array[counter], period, show_plot)
-            stock_data["stock_real_time_data"] = str(stock_real_time_values(array[counter]))
+            stock_data["stock_real_time_data"] = stock_real_time_values(array[counter])
         else:
             counter += array_lenght
             print('Error, stock values operation not allowed')
@@ -218,6 +218,5 @@ def compound_stocks(my_stocks_list_data):
         "stocks_list": compound_stocks,
         "stocks_watchlist": {},
     }
-    # print("----------------------------------")
-    # print(wallet_stocks)
+
     return wallet_stocks
