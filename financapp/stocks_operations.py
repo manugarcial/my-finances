@@ -16,6 +16,33 @@ def open_market(market='US'):
     response = finnhub_client.market_status(exchange=market)
     return response['isOpen']
 
+def get_company_peers_with_details(stock_ticker):
+    # Step 1: Fetch the peers using the existing method
+    peers = finnhub_client.company_peers(stock_ticker)
+
+    company_peers_details = []
+
+    # Step 2: Fetch details for each peer
+    for peer in peers:
+        # Fetch company profile details for the peer ticker
+        try:
+            profile = finnhub_client.company_profile2(symbol=peer)
+
+            # Extract desired information
+            company_name = profile.get('name').replace("'", "").replace('"', '')
+            logo_url = profile.get('logo')  # Assuming the API provides this
+
+            # Step 3: Store the ticker, name, and logo in a structured format
+            company_peers_details.append({
+                'ticker': peer,
+                'name': company_name,
+                'logo': logo_url,
+            })
+        except Exception as e:
+            print(f"Error fetching data for {peer}: {e}")
+
+    return company_peers_details
+
 # Obtiene calificaciones economicas de los paises del mundo (util para bonos y evoluciones de compañias que operen en la bolsa de ese pais)
 def country_economy_risk(country_name):
     response = finnhub_client.country()
@@ -49,15 +76,22 @@ def stock_historical_values(stock, period_data, show=False):
     my_stock = yfinance.Ticker(stock)
     historical_stock_data = my_stock.history(period=period_data)
     close_historical_data = historical_stock_data['Close'].values
+    open_historical_data = historical_stock_data['Open'].values
+    high_historical_data = historical_stock_data['High'].values
+    low_historical_data = historical_stock_data['Low'].values
     date_historical_data = historical_stock_data.index
+    formatted_dates = date_historical_data.strftime('%Y-%m-%d')
 
-    if(show): stock_historical_data_graph(stock, close_historical_data, date_historical_data)
+    # if(show): stock_historical_data_graph(stock, close_historical_data, date_historical_data)
     stock_history = {
-        "stock_historic_close_data": close_historical_data.tolist()
+        "stock_historic_close_data": close_historical_data.tolist(),
+        "stock_historic_open_data": open_historical_data.tolist(),
+        "stock_historic_high_data": high_historical_data.tolist(),
+        "stock_historic_low_data": low_historical_data.tolist(),
+        "date_historic_data": formatted_dates.tolist()
     }            
 
     return stock_history
-
 
 # Show historical data in graph using plot library
 def stock_historical_data_graph(stock, close_historical_data, date_historical_data):

@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from utils import search_dict_regex, dataframe_into_dict, html_data_into_dataframe, stocks_values, compound_stocks
-from stocks_operations import calculate_rsi, open_market, country_economy_risk, surprise_percentage, evaluate_rsi
+from stocks_operations import calculate_rsi, open_market, country_economy_risk, surprise_percentage, evaluate_rsi, get_company_peers_with_details
 from api_keys_data import finnhub_api_key
 from variables import my_18_stock_market_list, my_stocks_list, my_stocks_watchlist, my_stocks_list_purchase_timestamp, my_stocks_list_money_invested, my_stocks_list_data
 import sys
@@ -45,7 +45,8 @@ def main(ticker="ORCL", period='1mo'):
         rsi_evaluation = evaluate_rsi(rsi)
 
     company_profile = finnhub_client.company_profile2(symbol=stock_ticker)
-    company_peers = finnhub_client.company_peers(stock_ticker)
+    # company_peers = finnhub_client.company_peers(stock_ticker)
+    company_peers = get_company_peers_with_details(stock_ticker)
     company_recommendations = finnhub_client.recommendation_trends(stock_ticker)
     rating_adjustment = country_economy_risk('United States') # check currency strenght
     surprise_data = surprise_percentage(stock_ticker[0])
