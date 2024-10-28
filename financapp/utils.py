@@ -220,3 +220,68 @@ def compound_stocks(my_stocks_list_data):
     }
 
     return wallet_stocks
+
+
+def compound_stocks_daily(my_stocks_list_data):
+    compound_stocks_daily = []
+    daily_wallet_value = {}
+
+    # Identify the earliest transaction date
+    min_date = min(
+        transaction['timestamp'] for stock_data in my_stocks_list_data.values()
+        for transaction in stock_data['transactions']
+    )
+    start_date = datetime.datetime.fromtimestamp(min_date).date()
+    end_date = datetime.datetime.now().date()
+
+    # Loop through each day from start_date to end_date
+    current_date = start_date
+    while current_date <= end_date:
+        daily_wallet_total = 0
+        daily_transactions = []
+        for stock_symbol, stock_data in my_stocks_list_data.items():
+            # Get all transactions up to the current date
+            total_invested = 0
+            total_shares = 0
+
+            for transaction in stock_data['transactions']:
+                transaction_date = datetime.datetime.fromtimestamp(transaction['timestamp']).date()
+                # If transaction date matches the current date, record the transaction
+                if transaction_date == current_date:
+                    daily_transactions.append({
+                        "stock_symbol": stock_symbol,
+                        "date": transaction_date.strftime("%Y-%m-%d"),
+                        "operation": transaction['operation'],
+                        "quantity": transaction['cost']
+                    })
+                if transaction_date <= current_date:
+                    price_at_transaction = transaction.get('transaction_price', 0)
+                    shares_bought = transaction['cost'] / price_at_transaction if price_at_transaction else 0
+                    total_shares += shares_bought
+                    total_invested += transaction['cost']
+
+            # Fetch the stock's historical data for the current day
+            stock = yfinance.Ticker(stock_symbol)
+            historical_data = stock.history(start=str(current_date), end=str(current_date + timedelta(days=1)))
+
+            if not historical_data.empty:
+                daily_close_price = historical_data['Close'].iloc[-1]
+                daily_stock_value = total_shares * daily_close_price
+                daily_wallet_total += daily_stock_value
+
+        if daily_wallet_total > 0:
+            # Store the wallet value for the current day
+            daily_wallet_total = float(daily_wallet_total)
+            date_str = current_date.strftime("%Y-%m-%d")
+            daily_wallet_value[date_str] = daily_wallet_total
+
+            compound_stocks_daily.append({
+                "date": date_str,
+                "wallet_value": daily_wallet_total,
+                # "transactions": daily_transactions
+            })
+
+        # Move to the next day
+        current_date += datetime.timedelta(days=1)
+
+    return compound_stocks_daily

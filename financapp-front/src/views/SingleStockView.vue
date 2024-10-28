@@ -203,7 +203,7 @@ export default {
     filteredCompetitors() {
       // Filter out the current ticker from the competitors list
       // eslint-disable-next-line
-      return this.competitors ? this.competitors.filter(comp => comp !== this.ticker) : [];
+      return this.competitors ? this.competitors.filter(comp => comp !== this.name) : [];
     },
   },
   methods: {

@@ -1,7 +1,67 @@
 <template>
   <div id="stocks">
     <h1>{{ $t("Stocks") }}</h1>
-    <div class="wallet response-container">
+    <!-- Loading Icon (Shown only when loading is true) -->
+    <div v-if="loading" class="loading-icon">
+      <!-- Inline SVG for the loading spinner -->
+      <svg
+        width="50px"
+        height="50px"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="xMidYMid"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle
+          cx="50"
+          cy="50"
+          r="32"
+          stroke-width="8"
+          stroke="#c4c4c4"
+          stroke-dasharray="50.26548245743669 50.26548245743669"
+          fill="none"
+          stroke-linecap="round"
+        >
+          <animateTransform
+            attributeName="transform"
+            type="rotate"
+            repeatCount="indefinite"
+            dur="0.5s"
+            keyTimes="0;1"
+            values="0 50 50;360 50 50"
+          />
+        </circle>
+        <circle
+          cx="50"
+          cy="50"
+          r="23"
+          stroke-width="8"
+          stroke="#6a6a6a"
+          stroke-dasharray="36.12831551628262 36.12831551628262"
+          stroke-dashoffset="36.128"
+          fill="none"
+          stroke-linecap="round"
+        >
+          <animateTransform
+            attributeName="transform"
+            type="rotate"
+            repeatCount="indefinite"
+            dur="0.5s"
+            keyTimes="0;1"
+            values="0 50 50;-360 50 50"
+          />
+        </circle>
+      </svg>
+    </div>
+    <!-- ApexChart for compound wallet value evolution -->
+    <div v-if="!loading" class="chart-container">
+      <apexchart
+        width="100%"
+        type="line"
+        :options="chartOptions"
+        :series="seriesData"
+      />
+    </div>
+    <div v-if="response" class="wallet response-container">
       <div v-for="(item, index) in wallet" :key="index" class="box-data-item">
         {{ item["wallet_invested_value"] }}
         {{ item["transactions_value"] }}
@@ -12,7 +72,7 @@
       </div>
     </div>
     <br />
-    <div class="stocks-items response-container">
+    <div v-if="response" class="stocks-items response-container">
       <!-- Loop through data to create multiple instances of DataDisplay component -->
       <div
         v-for="(item, index) in stockItems"
@@ -22,6 +82,7 @@
           positive: item.stock_per_change >= 0,
           negative: item.stock_per_change < 0,
         }"
+        @click="navigateToStock(item.stock_symbol)"
       >
         <BoxData
           :initialNumber="item.stock_per_change"
@@ -39,20 +100,57 @@
 <script>
 import axios from "axios";
 import BoxData from "@/components/BoxData.vue";
+import VueApexCharts from "vue3-apexcharts";
 
 export default {
   components: {
     BoxData,
+    apexchart: VueApexCharts,
   },
   data() {
     return {
+      loading: true,
       scripts: [],
       response: null,
+      jsonResponse: null,
       stocks_list: [],
       stock_wallet: {},
       refreshInterval: null,
       stockItems: [],
       wallet: [],
+      walletEvolution: [], // To store the wallet compound values
+      seriesData: [], // Data for the chart
+      chartOptions: {
+        chart: {
+          id: "wallet-evolution-chart",
+          animations: {
+            enabled: true,
+          },
+        },
+        xaxis: {
+          type: "datetime",
+          title: {
+            text: "Date",
+          },
+        },
+        yaxis: {
+          title: {
+            text: "Wallet Value",
+          },
+          labels: {
+            formatter: function (val) {
+              return Math.round(val); // Rounds each label to an integer
+            },
+          },
+        },
+        stroke: {
+          curve: "smooth",
+        },
+        title: {
+          text: "Compound Value of Stock Wallet Over Time",
+          align: "center",
+        },
+      },
     };
   },
   created() {
@@ -67,6 +165,7 @@ export default {
       });
   },
   async mounted() {
+    // await this.fetchWalletEvolution();
     // Initial fetch when component is mounted
     await this.fetchStocks();
 
@@ -85,47 +184,52 @@ export default {
     async fetchStocks() {
       try {
         const apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
-        // Sending data to backend using axios
         const res = await axios.get(`${apiBaseUrl}/stocks_investment`);
-        // Save response to display
         this.response = res.data.wallet;
-        this.stockItems = [];
-        let responseString = this.response;
-        let fixedJsonString;
-        let jsonObject;
-        try {
-          // Replace all single quotes with double quotes
-          fixedJsonString = responseString.replace(/'/g, '"');
-          // Attempt to parse the fixed JSON string
-          jsonObject = JSON.parse(fixedJsonString);
-        } catch (error) {
-          console.error("Error parsing JSON after fixing quotes:", error);
-          return null;
-        }
-        this.wallet = [];
-        // let wallet_info = [];
-        for (const [key, value] of Object.entries(jsonObject["wallet_value"])) {
-          let wallet_data = {
-            [key]: value,
-          };
-          // wallet_info.push(wallet_data);
-          this.wallet.push(wallet_data);
-        }
 
-        // this.wallet.push(wallet_info);
+        let fixedJsonString = this.response.replace(/'/g, '"');
+        this.jsonResponse = JSON.parse(fixedJsonString);
 
-        for (const [key, value] of Object.entries(jsonObject["stocks_list"])) {
-          let stock_change_info = {
-            stock_symbol: key,
-            stock_per_change:
-              parseFloat(value[0]["stock_change_percentage"]).toFixed(4) * 100,
-          };
-          this.stockItems.push(stock_change_info);
-        }
+        // Parse the response for compound_stocks_daily
+        const data = this.jsonResponse["compound_stocks_daily"];
+        this.walletEvolution = data.map((entry) => ({
+          x: new Date(entry.date), // Ensures date is a JS Date object
+          y: entry.wallet_value, // Use correct field name for y-value
+        }));
+
+        // Update seriesData for ApexCharts
+        this.seriesData = [
+          {
+            name: "Compound Value",
+            data: this.walletEvolution,
+          },
+        ];
+
+        // Update other response data for display
+        // eslint-disable-next-line
+        const realTimeWallet = this.jsonResponse["compound_stocks_real_time"]["wallet_value"];
+        this.wallet = Object.keys(realTimeWallet).map((key) => ({
+          [key]: realTimeWallet[key],
+        }));
+
+        // Process stockItems
+        const stocksList =
+          this.jsonResponse["compound_stocks_real_time"]["stocks_list"];
+        this.stockItems = Object.keys(stocksList).map((stock) => ({
+          stock_symbol: stock,
+          // eslint-disable-next-line
+          stock_per_change: parseFloat(stocksList[stock][0].stock_change_percentage) * 100,
+        }));
       } catch (error) {
-        console.error("Error submitting form:", error);
+        console.error("Error fetching stocks data:", error);
         this.response = "An error occurred while submitting the form.";
+      } finally {
+        this.loading = false;
       }
+    },
+    navigateToStock(ticker) {
+      this.$router.push({ path: `/item/${ticker}` });
+      window.scrollTo(0, 0);
     },
   },
 };
@@ -235,6 +339,10 @@ h1.title {
   flex-basis: 33%; /* Each child takes up 25% of the container's width */
   box-sizing: border-box; /* Ensures padding and border are included in the width */
   padding: 10px;
+}
+
+.box-data-item {
+  cursor: pointer; /* Add this line to show a pointer on hover */
 }
 
 /* Responsive Design */
