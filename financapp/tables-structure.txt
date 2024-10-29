@@ -1,0 +1,31 @@
+sqlite3 financapp.db // Use table, create if it does not exist
+
+.tables // Show tables
+
+CREATE TABLE stocks (
+    ticker TEXT PRIMARY KEY,
+    stock_index TEXT,
+    currency TEXT
+);
+
+CREATE TABLE transactions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ticker TEXT,
+    operation TEXT,
+    cost REAL,
+    transaction_price REAL,
+    stock_price REAL,
+    timestamp INTEGER,
+    FOREIGN KEY (ticker) REFERENCES stocks (ticker),
+    UNIQUE(timestamp)
+);
+
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    surname TEXT NOT NULL,
+    username TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

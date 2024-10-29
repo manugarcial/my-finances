@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import SingleStockView from "../views/SingleStockView.vue";
+import UserLogin from "../components/UserLogin.vue";
+import { getCurrentUser } from "../api/api";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -13,6 +15,10 @@ const routes: Array<RouteRecordRaw> = [
   //   name: "about",
   //   component: () => import("../views/AboutView.vue"),
   // },
+  {
+    path: "/login",
+    component: UserLogin,
+  },
   {
     path: "/net-salary",
     name: "net-salary",
@@ -27,11 +33,13 @@ const routes: Array<RouteRecordRaw> = [
     path: "/stocks",
     name: "stocks",
     component: () => import("../views/StocksView.vue"),
+    meta: { requiresAuth: true },
   },
   {
     path: "/stocks-search",
     name: "stocks-search",
     component: () => import("../views/StockSearchView.vue"),
+    meta: { requiresAuth: true },
   },
   {
     path: "/global-economy-data",
@@ -42,6 +50,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/item/:ticker",
     component: SingleStockView,
     props: true,
+    meta: { requiresAuth: true },
   },
   {
     path: "/:catchAll(.*)",
@@ -52,6 +61,17 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  const user = getCurrentUser();
+
+  if (requiresAuth && !user) {
+    next("/login");
+  } else {
+    next();
+  }
 });
 
 export default router;

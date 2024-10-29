@@ -2,10 +2,43 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import subprocess  # To execute Python scripts
 from flasgger import Swagger
+from api_keys_data import jwt_secret_key, my_users_list
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 
 app = Flask(__name__)
+app.config['JWT_SECRET_KEY'] = jwt_secret_key
 CORS(app)  # Enable CORS for all routes
 swagger = Swagger(app) 
+jwt = JWTManager(app)
+
+users = my_users_list
+
+# Register a new user (for demo purposes, use a database in production)
+@app.route('/register', methods=['POST'])
+def register():
+    username = request.json.get('username')
+    password = request.json.get('password')
+    if username in users:
+        return jsonify({"msg": "Username already exists"}), 409
+    users[username] = password
+    return jsonify({"msg": "User registered successfully"}), 201
+
+# User login
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.json.get('username')
+    password = request.json.get('password')
+    if users.get(username) != password:
+        return jsonify({"msg": "Invalid username or password"}), 401
+    access_token = create_access_token(identity=username)
+    return jsonify(access_token=access_token)
+
+# Protected route example
+@app.route('/protected', methods=['GET'])
+@jwt_required()
+def protected():
+    current_user = get_jwt_identity()
+    return jsonify(logged_in_as=current_user), 200
 
 @app.route('/')
 def home():
@@ -49,6 +82,7 @@ def single_stock():
         return jsonify({"error": str(e)}), 500
     
 @app.route('/calculate_irpf', methods=['POST'])
+@jwt_required()
 def irpf():
     """
     Calculate IRPF based on the provided data.

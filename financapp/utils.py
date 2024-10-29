@@ -1,7 +1,6 @@
 import re
 import pandas
 from stocks_operations import stock_real_time_values, stock_historical_values
-import asyncio  # Import asyncio for async execution
 import datetime
 import yfinance
 from datetime import timedelta

@@ -1,13 +1,8 @@
 import finnhub
-import pandas as pd
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-from utils import search_dict_regex, dataframe_into_dict, html_data_into_dataframe, stocks_values, compound_stocks
+from utils import stocks_values
 from stocks_operations import calculate_rsi, open_market, country_economy_risk, surprise_percentage, evaluate_rsi, get_company_peers_with_details
 from api_keys_data import finnhub_api_key
-from variables import my_18_stock_market_list, my_stocks_list, my_stocks_watchlist, my_stocks_list_purchase_timestamp, my_stocks_list_money_invested, my_stocks_list_data
 import sys
-import json
 
 my_finnhub_api_key = finnhub_api_key
 finnhub_client = finnhub.Client(api_key=my_finnhub_api_key)
@@ -17,8 +12,6 @@ finnhub_client = finnhub.Client(api_key=my_finnhub_api_key)
 # my_index_dict = dataframe_into_dict(my_index_dataframe)
 
 # print("Is the stock market open today?:", open_market())
-# stocks_values(my_stocks_list,'real_time','1mo')
-# stocks_values(my_stocks_list,'historical', study_period, False)
 # No es procesable con un script, se necesita analizar con una IA superior
 # print('Company news: ' + finnhub_client.company_news('AAPL', _from="2024-01-01", to="2024-09-10"))
 

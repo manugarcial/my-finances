@@ -17,3 +17,5 @@ tmp/
 
 # Ignore files with sensitive data
 ./api_keys_data.py
+./tables-structure.txt
+./secrets_generator.py
