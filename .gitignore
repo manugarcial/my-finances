@@ -1,0 +1,5 @@
+# Ignoring sensible files in financapp
+financapp/postgreconnection.py
+financapp/tables-structure.txt
+
+# Ignoring sensible files in financapp-front

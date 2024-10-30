@@ -44,7 +44,6 @@ def protected():
 def home():
     return jsonify({
         "scripts": [
-            # {"name": "investments", "url": "/investing.py"},
             {"name": "irpf", "url": "/calculate_irpf.py"},
             {"name": "mortgage", "url": "/mortgage.py"},
             {"name": "stocks", "url": "/stocks_investment.py"},
@@ -82,7 +81,6 @@ def single_stock():
         return jsonify({"error": str(e)}), 500
     
 @app.route('/calculate_irpf', methods=['POST'])
-@jwt_required()
 def irpf():
     """
     Calculate IRPF based on the provided data.
@@ -117,7 +115,6 @@ def irpf():
         currency = data.get('currency')
         country_code = data.get('country')
         region_code = data.get('region')
-        # age = data.get('age')
         anual_rent = data.get('anual_rent')
         health_discount = data.get('health')
         
@@ -131,8 +128,6 @@ def irpf():
         )
 
         output = result.stdout
-
-        # print(result.stdout)
 
         return jsonify({"output": output})
     except Exception as e:
@@ -160,7 +155,6 @@ def mortgage():
             ['python3', 'mortgage.py', str(capital), str(interest), str(mortgage_years), str(additional_yearly_payment), str(start_payment_year), str(purchase_tax), str(sell_price), str(bank_finance_percentage), str(agency_commission)],
             capture_output=True, text=True
         )
-        # print(result.stdout)
 
         # Check for errors in the script execution
         if result.returncode != 0:
