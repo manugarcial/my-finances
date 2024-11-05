@@ -3,3 +3,4 @@ financapp/postgreconnection.py
 financapp/tables-structure.txt
 
 # Ignoring sensible files in financapp-front
+.env*

@@ -1,31 +1,57 @@
-sqlite3 financapp.db // Use table, create if it does not exist
-
-.tables // Show tables
-
-CREATE TABLE stocks (
+CREATE TABLE IF NOT EXISTS stocks (
     ticker TEXT PRIMARY KEY,
     stock_index TEXT,
     currency TEXT
 );
 
-CREATE TABLE transactions (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    ticker TEXT,
-    operation TEXT,
-    cost REAL,
-    transaction_price REAL,
-    stock_price REAL,
-    timestamp INTEGER,
-    FOREIGN KEY (ticker) REFERENCES stocks (ticker),
-    UNIQUE(timestamp)
-);
-
 CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
     surname TEXT NOT NULL,
     username TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    user_role TEXT
+);
+
+CREATE TABLE IF NOT EXISTS transactions (
+    id SERIAL PRIMARY KEY,
+    username TEXT,
+    ticker TEXT,
+    operation TEXT,
+    cost REAL,
+    transaction_price REAL,
+    stock_price REAL,
+    timestamp BIGINT,
+    FOREIGN KEY (ticker) REFERENCES stocks (ticker),
+    FOREIGN KEY (username) REFERENCES users (username)
+);
+
+-- Roles table
+CREATE TABLE IF NOT EXISTS roles (
+    id SERIAL PRIMARY KEY,
+    role_name TEXT UNIQUE NOT NULL,
+    description TEXT
+);
+
+-- Permissions table
+CREATE TABLE IF NOT EXISTS permissions (
+    id SERIAL PRIMARY KEY,
+    permission_name TEXT UNIQUE NOT NULL,
+    description TEXT
+);
+
+-- User_Roles table (many-to-many)
+CREATE TABLE IF NOT EXISTS user_roles (
+    user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
+    role_id INTEGER REFERENCES roles (id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, role_id)
+);
+
+-- Role_Permissions table (many-to-many)
+CREATE TABLE IF NOT EXISTS role_permissions (
+    role_id INTEGER REFERENCES roles (id) ON DELETE CASCADE,
+    permission_id INTEGER REFERENCES permissions (id) ON DELETE CASCADE,
+    PRIMARY KEY (role_id, permission_id)
 );

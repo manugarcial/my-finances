@@ -21,8 +21,6 @@ my_18_stock_market_list = {
     'MIB':'https://en.wikipedia.org/wiki/FTSE_MIB'
 }
 
-# my_stocks_list = ['AAPL','ORCL','COST','TSLA','ORLY','MSI','HWKN','MCO','META','AMZN','NVDA']
-# Operations considered: invest, withdraw
 my_stocks_list_data = {
     'AAPL': {'index':'Nasdaq100','currency':'US Dollars','transactions':[{'operation':'invest', 'cost':10, 'transaction_price':0, 'stock_price': 0,'timestamp':1727875800}]},
     'ORCL': {'index':'Nasdaq100','currency':'US Dollars','transactions':[{'operation':'invest', 'cost':10, 'transaction_price':1.10, 'stock_price': 0,'timestamp':1727883300}]},

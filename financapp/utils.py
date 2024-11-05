@@ -67,9 +67,9 @@ def adjust_timestamp(original_timestamp_str, to_timezone_str):
 
     return adjusted_timestamp
 
-def get_stock_price_at_timestamp(stock_symbol, timestamp):
+def get_stock_price_at_timestamp(stock_symbol, timestamp, my_list_data):
     # Get the index for the specified stock
-    stock_index = my_stocks_list_data[stock_symbol]['index']
+    stock_index = my_list_data[stock_symbol]['index']
     # Get the corresponding timezone from index_timezone
     timezone = index_timezone.get(stock_index)
     adjusted_date_time = adjust_timestamp(timestamp, timezone)
@@ -79,7 +79,7 @@ def get_stock_price_at_timestamp(stock_symbol, timestamp):
 
     # Download historical data for the stock
     stock = yfinance.Ticker(stock_symbol)
-    historical_data = stock.history(start=start_date, end=end_date, interval="1m")
+    historical_data = stock.history(start=start_date, end=end_date, interval="1d")
     if historical_data.empty:
         print(f"No data available for {stock_symbol} at {start_date}")
         return None
@@ -117,7 +117,7 @@ def get_stock_price_at_timestamp(stock_symbol, timestamp):
 
             # Download historical data for the stock on the next day
             stock = yfinance.Ticker(stock_symbol)
-            historical_data = stock.history(start=start_date, end=end_date, interval="1m")
+            historical_data = stock.history(start=start_date, end=end_date, interval="1d")
 
             if historical_data.empty:
                 print(f"No trading data found for {stock_symbol} on {start_date}. Trying the next day...")
@@ -142,8 +142,7 @@ def sum_transactions():
             total_sum += transaction.get('transaction_price', 0)  # Add the transaction price to the total sum
     return total_sum
 
-def get_my_stock_data(stock_symbol, stock_data, original_aggregated_value, real_aggregated_value):
-    # Access the 'transactions' list inside each stock's data
+def get_my_stock_data(stock_symbol, stock_data, original_aggregated_value, real_aggregated_value, my_list_data):
     transactions = stock_data.get('transactions', [])
     stock_amount_invested = 0
     transaction_value = 0
@@ -151,15 +150,12 @@ def get_my_stock_data(stock_symbol, stock_data, original_aggregated_value, real_
     
     # Iterate through each transaction as if it were an array
     for index, transaction in enumerate(transactions):
-
         for key, value in transaction.items():
-            # Check if the key is 'cost'
             if key == 'cost':
-                # Add the value to the cost sum
                 stock_amount_invested += value
                 transaction_value = value
             if key == 'timestamp':
-                price_at_timestamp = float(get_stock_price_at_timestamp(stock_symbol, value))
+                price_at_timestamp = float(get_stock_price_at_timestamp(stock_symbol, value, my_list_data))
                 stocks_transactioned = transaction_value / price_at_timestamp
                 stocks_number += stocks_transactioned
 
@@ -192,7 +188,7 @@ def compound_stocks(my_stocks_list_data):
 
     # Iterate through the dictionary
     for stock_symbol, stock_data in my_stocks_list_data.items():
-        stock_info = get_my_stock_data(stock_symbol, stock_data, original_aggregated_value, real_aggregated_value)
+        stock_info = get_my_stock_data(stock_symbol, stock_data, original_aggregated_value, real_aggregated_value, my_stocks_list_data)
         original_aggregated_value = stock_info["aggregated_value"]
         real_aggregated_value = stock_info["current_value"]
 

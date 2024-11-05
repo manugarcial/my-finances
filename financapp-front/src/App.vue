@@ -1,28 +1,41 @@
 <template>
   <nav class="navbar">
     <div class="navbar-brand">
-      <!-- <img src="path/to/your/icon.png" alt="App Icon" class="app-icon" /> -->
       <button
         @click="toggleMenu"
         class="hamburger"
         aria-label="Toggle menu"
-        ref="hamburguer"
+        ref="hamburger"
       >
         <span class="bar"></span>
         <span class="bar"></span>
         <span class="bar"></span>
       </button>
+      <!-- <img src="path/to/your/icon.png" alt="App Icon" class="app-icon" /> -->
+      <div class="app-icon">Financapp</div>
     </div>
 
     <div :class="['navbar-menu', { 'is-active': menuActive }]" ref="navbarMenu">
-      <router-link to="/" class="navbar-item">Home</router-link>
-      <router-link to="/net-salary" class="navbar-item">Net Salary</router-link>
-      <router-link to="/mortgage" class="navbar-item">Mortgage</router-link>
-      <router-link to="/stocks" class="navbar-item">Stocks</router-link>
-      <router-link to="/stocks-search" class="navbar-item">
+      <router-link to="/" class="navbar-item" @click="closeMenu">
+        Home
+      </router-link>
+      <router-link to="/net-salary" class="navbar-item" @click="closeMenu">
+        Net Salary
+      </router-link>
+      <router-link to="/mortgage" class="navbar-item" @click="closeMenu">
+        Mortgage
+      </router-link>
+      <router-link to="/stocks" class="navbar-item" @click="closeMenu">
+        Stocks
+      </router-link>
+      <router-link to="/stocks-search" class="navbar-item" @click="closeMenu">
         Stocks Search
       </router-link>
-      <router-link to="/global-economy-data" class="navbar-item">
+      <router-link
+        to="/global-economy-data"
+        class="navbar-item"
+        @click="closeMenu"
+      >
         Global Economy Data
       </router-link>
     </div>
@@ -36,29 +49,39 @@ export default {
       menuActive: false,
     };
   },
+  created() {
+    this.$store.dispatch("checkStoredUser").then(() => {
+      console.log("Checked stored user in App.vue");
+    });
+  },
   methods: {
     toggleMenu() {
       this.menuActive = !this.menuActive;
     },
-    // handleClickOutside(event) {
-    //   const menu = this.$refs.navbarMenu;
-    //   const hamburger = this.$refs.hamburger;
-
-    //   // Check if the menu is active and the clicked target is outside the menu and the hamburger button
-    //   // eslint-disable-next-line
-    //   if (this.menuActive && menu && !menu.contains(event.target) && !hamburger.contains(event.target)) {
-    //     this.menuActive = false; // Close the menu
-    //   }
-    // },
+    closeMenu() {
+      this.menuActive = false;
+    },
+    handleClickOutside(event) {
+      const menu = this.$refs.navbarMenu;
+      const hamburger = this.$refs.hamburger;
+      // Check if the click was outside the menu and the hamburger button
+      if (menu && hamburger) {
+        if (
+          this.menuActive &&
+          !menu.contains(event.target) &&
+          !hamburger.contains(event.target)
+        ) {
+          this.closeMenu();
+        }
+      }
+    },
   },
-  // mounted() {
-  //   // Add event listener to the document for detecting clicks
-  //   document.addEventListener("click", this.handleClickOutside);
-  // },
-  // beforeUnmount() {
-  //   // Clean up the event listener when the component is destroyed
-  //   document.removeEventListener("click", this.handleClickOutside);
-  // },
+  mounted() {
+    document.addEventListener("click", this.handleClickOutside);
+  },
+  beforeUnmount() {
+    document.removeEventListener("click", this.handleClickOutside);
+  },
 };
 </script>
 <style lang="scss">
@@ -75,7 +98,7 @@ nav {
 
   a {
     font-weight: bold;
-    color: #2c3e50;
+    color: white;
 
     &.router-link-exact-active {
       color: #42b983;
@@ -93,8 +116,12 @@ nav {
   z-index: 1000;
 }
 
-.app-icon {
-  height: 40px; /* Adjust as needed */
+.navbar-brand {
+  display: flex;
+  .app-icon {
+    color: white;
+    margin-left: 10px;
+  }
 }
 
 .hamburger {

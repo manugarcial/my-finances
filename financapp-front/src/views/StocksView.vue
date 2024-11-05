@@ -61,6 +61,16 @@
         :series="seriesData"
       />
     </div>
+    <!-- Add Stock Button -->
+    <button @click="openModal" class="submit-button">Add Stock</button>
+
+    <!-- Add Stock Modal -->
+    <AddStockModal
+      v-if="isModalOpen"
+      :isOpen="isModalOpen"
+      :close="closeModal"
+      @add-stock="handleAddStock"
+    />
     <div v-if="response" class="wallet response-container">
       <div v-for="(item, index) in wallet" :key="index" class="box-data-item">
         {{ item["wallet_invested_value"] }}
@@ -101,11 +111,14 @@
 import axios from "axios";
 import BoxData from "@/components/BoxData.vue";
 import VueApexCharts from "vue3-apexcharts";
+import AddStockModal from "@/modals/AddStockModal.vue";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
     BoxData,
     apexchart: VueApexCharts,
+    AddStockModal,
   },
   data() {
     return {
@@ -120,6 +133,11 @@ export default {
       wallet: [],
       walletEvolution: [], // To store the wallet compound values
       seriesData: [], // Data for the chart
+      newStockSymbol: "",
+      isModalOpen: false,
+      userData: {
+        username: "",
+      },
       chartOptions: {
         chart: {
           id: "wallet-evolution-chart",
@@ -165,7 +183,6 @@ export default {
       });
   },
   async mounted() {
-    // await this.fetchWalletEvolution();
     // Initial fetch when component is mounted
     await this.fetchStocks();
 
@@ -180,11 +197,27 @@ export default {
       clearInterval(this.refreshInterval);
     }
   },
+  computed: {
+    ...mapGetters(["getUsername"]), // Map the getter to a computed property
+    username() {
+      return this.getUsername; // Access the username through the getter
+    },
+  },
   methods: {
     async fetchStocks() {
+      console.log("fetch stocks");
       try {
         const apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
-        const res = await axios.get(`${apiBaseUrl}/stocks_investment`);
+        console.log(apiBaseUrl);
+        console.log(this.username);
+        this.userData.username = this.username;
+        console.log(this.userData);
+        const res = await axios.post(
+          `${apiBaseUrl}/stocks_investment`,
+          this.userData
+        );
+        console.log("response");
+        console.log(res);
         this.response = res.data.wallet;
 
         let fixedJsonString = this.response.replace(/'/g, '"');
@@ -225,6 +258,32 @@ export default {
         this.response = "An error occurred while submitting the form.";
       } finally {
         this.loading = false;
+      }
+    },
+    openModal() {
+      this.isModalOpen = true; // Show the modal
+    },
+    closeModal() {
+      this.isModalOpen = false; // Hide the modal
+    },
+    async handleAddStock(stockData) {
+      console.log("hello");
+      try {
+        const apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
+        console.log(apiBaseUrl);
+        console.log(this.username);
+        const response = await axios.post(`${apiBaseUrl}/add_stock`, stockData);
+        console.log(response);
+        // Optionally, update local state or show a success message
+        alert("Stock added successfully!");
+
+        // Refresh the stocks list to include the new stock
+        await this.fetchStocks();
+      } catch (error) {
+        console.error("Error adding stock:", error);
+        alert("An error occurred while adding the stock.");
+      } finally {
+        this.closeModal(); // Close the modal after submitting
       }
     },
     navigateToStock(ticker) {

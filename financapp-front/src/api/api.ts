@@ -1,5 +1,6 @@
-// api.ts
 import axios, { AxiosResponse } from "axios";
+import { Store } from "vuex"; // Ensure this is imported
+import { User } from "../store/types";
 
 const API_URL = process.env.VUE_APP_API_BASE_URL as string; // Backend URL
 
@@ -8,20 +9,7 @@ interface LoginResponse {
   access_token: string;
 }
 
-// Define the expected structure of the stored user data
-interface User {
-  access_token: string;
-  // Add any additional fields that the user object might have
-}
-
-/**
- * Login function
- * Sends username and password to the backend and stores the access token if login is successful.
- *
- * @param username - The username of the user
- * @param password - The password of the user
- * @returns A promise that resolves with the login response data
- */
+// Login function
 export const userlogin = (
   username: string,
   password: string
@@ -30,9 +18,21 @@ export const userlogin = (
     .post<LoginResponse>(`${API_URL}/login`, { username, password })
     .then((response: AxiosResponse<LoginResponse>) => {
       if (response.data.access_token) {
-        localStorage.setItem("user", JSON.stringify(response.data));
+        console.log("userlogin response");
+        console.log(response);
+        // Return the user data object if access_token is present
+        return {
+          access_token: response.data.access_token,
+        };
+      } else {
+        // If access_token is not found, throw an error
+        throw new Error("No access token received");
       }
-      return response.data;
+    })
+    .catch((error) => {
+      console.error("Error during login:", error);
+      // Optionally, you can throw the error further up the chain for handling
+      throw error; // Re-throw the error to be handled in the calling function
     });
 };
 
@@ -50,7 +50,12 @@ export const userlogout = (): void => {
  *
  * @returns The user data or null if no user is logged in
  */
-export const getCurrentUser = (): User | null => {
-  const user = localStorage.getItem("user");
-  return user ? (JSON.parse(user) as User) : null;
+// export const getCurrentUser = (): User | null => {
+//   const user = localStorage.getItem("user");
+//   return user ? (JSON.parse(user) as User) : null;
+// };
+export const getCurrentUser = (store: Store<any>): User | null => {
+  console.log("get current user API");
+  console.log(store.state.user);
+  return store.state.user || null;
 };

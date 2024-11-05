@@ -2,7 +2,8 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import SingleStockView from "../views/SingleStockView.vue";
 import UserLogin from "../components/UserLogin.vue";
-import { getCurrentUser } from "../api/api";
+// import { getCurrentUser } from "../api/api";
+import store from "../store";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -13,6 +14,11 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/login",
     component: UserLogin,
+  },
+  {
+    path: "/register",
+    name: "register",
+    component: () => import("../views/RegisterView.vue"),
   },
   {
     path: "/net-salary",
@@ -60,7 +66,9 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
-  const user = getCurrentUser();
+  const user = store.state.user; // This should retrieve the user from the store
+
+  console.log("Checking user in router guard:", user); // Debugging line
 
   if (requiresAuth && !user) {
     next("/login");
