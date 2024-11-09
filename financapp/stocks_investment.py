@@ -3,6 +3,10 @@ from variables import my_stocks_list_data
 from stocks.stock_db_operations import select_user_transactions
 import sys
 
+import logging
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
 def transform_stock_tuple(stock_tuple):
     # Mapping for index and currency values
     index_mapping = {
@@ -72,11 +76,29 @@ def main():
         # Append the new transaction to the list of transactions for the stock
         my_stocks_list[stock_symbol]['transactions'].append(new_transaction)
 
-    wallet_data = {
-        "compound_stocks_real_time":compound_stocks(my_stocks_list),
-        "compound_stocks_daily":compound_stocks_daily(my_stocks_list),
-    }
+    # print("my stock")
+    # print(my_stocks_list)
 
+    compound = compound_stocks(my_stocks_list)
+    compound_daily = compound_stocks_daily(my_stocks_list)
+
+    # print(compound)
+    # print(compound_daily)
+    # print("-------")
+
+    # try:
+    #     compound_daily = compound_stocks_daily(my_stocks_list)
+    #     print("Compound Daily:")
+    #     print(compound_daily)
+    # except Exception as e:
+    #     print("An error occurred:", e)
+
+    wallet_data = {
+        "compound_stocks_real_time":compound,
+        "compound_stocks_daily":compound_daily,
+    }
+    # print("het")
+    # print(compound_stocks_daily(my_stocks_list))
     print(wallet_data)
 
 # Run the main function

@@ -157,12 +157,13 @@ export default {
           },
           labels: {
             formatter: function (val) {
-              return Math.round(val); // Rounds each label to an integer
+              return val.toFixed(2); // Rounds each label to an integer
             },
           },
         },
         stroke: {
           curve: "smooth",
+          colors: ["9E9E9E"],
         },
         title: {
           text: "Compound Value of Stock Wallet Over Time",
@@ -289,6 +290,22 @@ export default {
     navigateToStock(ticker) {
       this.$router.push({ path: `/item/${ticker}` });
       window.scrollTo(0, 0);
+    },
+  },
+  watch: {
+    // Watch seriesData to set the line color based on its values
+    seriesData: {
+      immediate: true, // Trigger this when seriesData is initially set
+      handler(newData) {
+        if (newData.length > 0 && newData[0].data.length > 1) {
+          const firstValue = newData[0].data[0].y;
+          const lastValue = newData[0].data[newData[0].data.length - 1].y;
+
+          // Conditionally set the line color
+          this.chartOptions.stroke.colors =
+            lastValue > firstValue ? ["#4CAF50"] : ["#F44336"];
+        }
+      },
     },
   },
 };
