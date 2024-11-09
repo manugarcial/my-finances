@@ -1,6 +1,27 @@
 <template>
   <div id="stocks">
     <h1>{{ $t("Stocks") }}</h1>
+    <!-- Display Last Day Total Value -->
+    <div v-if="!loading" class="last-day-total">
+      <h2>
+        Total Value on Last Day:
+        {{ convertedTotalValue }} {{ selectedCurrency }}
+      </h2>
+    </div>
+
+    <div v-if="!loading" class="currency-selector">
+      <label for="currency">Select Currency:</label>
+      <select v-model="selectedCurrency" @change="convertCurrency">
+        <option
+          v-for="currency in currencies"
+          :key="currency"
+          :value="currency"
+        >
+          {{ currency }}
+        </option>
+      </select>
+    </div>
+
     <!-- Loading Icon (Shown only when loading is true) -->
     <div v-if="loading" class="loading-icon">
       <!-- Inline SVG for the loading spinner -->
@@ -135,6 +156,11 @@ export default {
       seriesData: [], // Data for the chart
       newStockSymbol: "",
       isModalOpen: false,
+      lastDayTotalValue: null,
+      convertedTotalValue: null,
+      selectedCurrency: "USD",
+      currencies: ["USD", "EUR", "GBP"], // Add other currencies as needed
+      exchangeRates: {},
       userData: {
         username: "",
       },
@@ -206,11 +232,11 @@ export default {
   },
   methods: {
     async fetchStocks() {
-      console.log("fetch stocks");
+      // console.log("fetch stocks");
       try {
         const apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
-        console.log(apiBaseUrl);
-        console.log(this.username);
+        // console.log(apiBaseUrl);
+        // console.log(this.username);
         this.userData.username = this.username;
         console.log(this.userData);
         const res = await axios.post(
@@ -254,12 +280,73 @@ export default {
           // eslint-disable-next-line
           stock_per_change: parseFloat(stocksList[stock][0].stock_change_percentage) * 100,
         }));
+
+        // Get the last day’s total value from the last data point in `walletEvolution`
+        const lastDayData =
+          this.walletEvolution[this.walletEvolution.length - 1];
+        if (lastDayData) {
+          this.lastDayTotalValue = lastDayData.y;
+          this.convertedTotalValue = this.lastDayTotalValue; // Initial value before conversion
+        }
+
+        // Determine the color based on the trend, as explained previously
+        const firstValue = this.walletEvolution[0]?.y;
+        const lastValue =
+          this.walletEvolution[this.walletEvolution.length - 1]?.y;
+        const lineColor = lastValue > firstValue ? "#4CAF50" : "#F44336";
+
+        // Set seriesData and color
+        this.seriesData = [
+          { name: "Compound Value", data: this.walletEvolution },
+        ];
+        this.chartOptions = { ...this.chartOptions, colors: [lineColor] };
       } catch (error) {
         console.error("Error fetching stocks data:", error);
         this.response = "An error occurred while submitting the form.";
       } finally {
         this.loading = false;
       }
+    },
+    async convertCurrency() {
+      // If the selected currency is USD, reset to the original value
+      // if (this.selectedCurrency === "USD") {
+      //   this.convertedTotalValue = this.lastDayTotalValue;
+      //   return;
+      // }
+
+      this.convertedTotalValue = this.lastDayTotalValue;
+
+      // Check if exchange rate for the selected currency is already fetched
+      if (!this.exchangeRates[this.selectedCurrency]) {
+        try {
+          // Fetch exchange rate from an external API
+          const response = await axios.get(
+            `https://api.exchangerate-api.com/v4/latest/${this.selectedCurrency}`
+          );
+          const rates = response.data.rates;
+          this.exchangeRates = rates;
+        } catch (error) {
+          console.error("Error fetching exchange rate:", error);
+          return;
+        }
+      }
+
+      // Convert the last day’s total value
+      const conversionRate = this.exchangeRates[this.selectedCurrency];
+      this.convertedTotalValue = (
+        this.lastDayTotalValue * conversionRate
+      ).toFixed(2);
+
+      // Convert the chart values as well
+      this.seriesData = [
+        {
+          name: `Compound Value in ${this.selectedCurrency}`,
+          data: this.walletEvolution.map((entry) => ({
+            x: entry.x,
+            y: parseFloat((entry.y * conversionRate).toFixed(2)),
+          })),
+        },
+      ];
     },
     openModal() {
       this.isModalOpen = true; // Show the modal
