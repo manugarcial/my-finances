@@ -1,10 +1,10 @@
 <template>
   <div id="mortgage">
-    <h1 class="page-title">{{ $t("Mortgage") }}</h1>
+    <h1 class="page-title">{{ $t("mortgage") }}</h1>
     <div class="form-results">
       <form class="form-container" @submit.prevent="submitForm">
         <div class="form-group">
-          <label for="numberInput">Capital lend by the bank:</label>
+          <label for="numberInput">{{ $t("capital_lend") }}</label>
           <input
             type="number"
             v-model.number="formData.capital"
@@ -15,7 +15,7 @@
           <span v-if="numberError" class="error">{{ numberError }}</span>
         </div>
         <div class="form-group">
-          <label for="interestInput">Anual interes rate:</label>
+          <label for="interestInput">{{ $t("anual_interest") }}</label>
           <input
             type="number"
             v-model.number="formData.interest"
@@ -28,7 +28,7 @@
           <span v-if="numberError" class="error">{{ numberError }}</span>
         </div>
         <div class="form-group">
-          <label for="interestInput">Mortgage years:</label>
+          <label for="interestInput">{{ $t("mortgage_years") }}</label>
           <input
             type="number"
             v-model.number="formData.mortgage_years"
@@ -39,7 +39,7 @@
           <span v-if="numberError" class="error">{{ numberError }}</span>
         </div>
         <div class="form-group">
-          <label for="interestInput">Additional yearly payment:</label>
+          <label for="interestInput">{{ $t("additional_yearly_pay") }}</label>
           <input
             type="number"
             v-model.number="formData.additional_yearly_payment"
@@ -50,7 +50,7 @@
           <span v-if="numberError" class="error">{{ numberError }}</span>
         </div>
         <div class="form-group">
-          <label for="interestInput">Start payment year:</label>
+          <label for="interestInput">{{ $t("start_payment_year") }}</label>
           <input
             type="number"
             v-model.number="formData.start_payment_year"
@@ -61,7 +61,7 @@
           <span v-if="numberError" class="error">{{ numberError }}</span>
         </div>
         <div class="form-group">
-          <label for="interestInput">Buy / Selling Tax:</label>
+          <label for="interestInput">{{ $t("buy_selling_tax") }}</label>
           <input
             type="number"
             v-model.number="formData.purchase_tax"
@@ -72,7 +72,7 @@
           <span v-if="numberError" class="error">{{ numberError }}</span>
         </div>
         <div class="form-group">
-          <label for="interestInput">Sell price:</label>
+          <label for="interestInput">{{ $t("sell_price") }}</label>
           <input
             type="number"
             v-model.number="formData.sell_price"
@@ -85,7 +85,7 @@
           <span v-if="numberError" class="error">{{ numberError }}</span>
         </div>
         <div class="form-group">
-          <label for="interestInput">Bank financiation:</label>
+          <label for="interestInput">{{ $t("bank_loan") }}</label>
           <input
             type="number"
             v-model.number="formData.bank_finance_percentage"
@@ -98,7 +98,7 @@
           <span v-if="numberError" class="error">{{ numberError }}</span>
         </div>
         <div class="form-group">
-          <label for="interestInput">Agency commission:</label>
+          <label for="interestInput">{{ $t("agency_commission") }}</label>
           <input
             type="number"
             v-model.number="formData.agency_commission"
@@ -116,12 +116,12 @@
             :disabled="isSubmitDisabled"
             class="submit-button"
           >
-            Calcular
+            {{ $t("calculate") }}
           </button>
         </div>
       </form>
       <div v-if="response" class="response-container">
-        <h2>Mortgage</h2>
+        <h2>{{ $t("mortgage") }}</h2>
         <div class="mortgage-items">
           <div
             v-for="(item, index) in boxDataItems"
@@ -147,16 +147,16 @@ export default {
   data() {
     return {
       boxDataItems: [
-        { number: 10, text: "Mortgage years" },
-        { number: 20, text: "Mortgage months" },
-        { number: 30, text: "Total loan value" },
-        { number: 10, text: "Sell / Buy Tax" },
-        { number: 10, text: "Minimal money needed" },
-        { number: 10, text: "Annual taxes" },
-        { number: 10, text: "Total expense no mortgage cancelations" },
-        { number: 10, text: "Total expense with mortgage cancelations" },
-        { number: 10, text: "Minimun resell price" },
-        { number: 10, text: "Resell percentage rise" },
+        { number: 10, text: this.$t("mortgage_years") },
+        { number: 20, text: this.$t("mortgage_months") },
+        { number: 30, text: this.$t("total_loan_value") },
+        { number: 10, text: this.$t("buy_selling_tax") },
+        { number: 10, text: this.$t("minimal_savings") },
+        { number: 10, text: this.$t("anual_taxes_expected") },
+        { number: 10, text: this.$t("total_expenses_no_cancel") },
+        { number: 10, text: this.$t("total_expenses_with_cancel") },
+        { number: 10, text: this.$t("minimun_resell_price") },
+        { number: 10, text: this.$t("resell_perc_rise") },
       ],
       scripts: [],
       formData: {
@@ -173,22 +173,7 @@ export default {
       response: null,
     };
   },
-  computed: {
-    // Validation for number input
-    // numberError() {
-    //   if (this.formData.number === null || this.formData.number === "") {
-    //     return "Number is required.";
-    //   }
-    //   if (this.formData.number <= 0) {
-    //     return "Number must be greater than zero.";
-    //   }
-    //   return null;
-    // },
-    // Disable submit button if numberError exists or currency is not selected
-    // isSubmitDisabled() {
-    //   return this.numberError !== null || this.formData.capital === "";
-    // },
-  },
+  computed: {},
   created() {
     // Use VUE_APP_API_BASE_URL from environment variables
     const apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
@@ -212,9 +197,6 @@ export default {
         );
         // Save response to display
         this.response = res.data.output;
-        console.log("Mi respuesta en JSON");
-        console.log(this.response);
-        console.log(typeof this.response);
         let responseString = this.response;
         let fixedJsonString;
         let jsonObject;
@@ -223,7 +205,6 @@ export default {
           fixedJsonString = responseString.replace(/'/g, '"');
           // Attempt to parse the fixed JSON string
           jsonObject = JSON.parse(fixedJsonString);
-          console.log(jsonObject);
         } catch (error) {
           console.error("Error parsing JSON after fixing quotes:", error);
           return null;

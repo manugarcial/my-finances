@@ -1,10 +1,10 @@
 <template>
   <div id="net_salary">
-    <h1 class="page-title">{{ $t("Net Salary Calculation") }}</h1>
+    <h1 class="page-title">{{ $t("net_salary_title") }}</h1>
     <div class="form-results">
       <form class="form-container" @submit.prevent="submitForm">
         <div class="form-group">
-          <label for="numberInput">Salario bruto anual:</label>
+          <label for="numberInput"> {{ $t("anual_salary") }} </label>
           <input
             type="number"
             v-model.number="formData.salary"
@@ -15,35 +15,21 @@
           <span v-if="numberError" class="error">{{ numberError }}</span>
         </div>
         <div class="form-group">
-          <label for="currency">Moneda:</label>
-          <select
-            v-model="formData.currency"
-            id="currency"
-            class="input-field"
-            required
-          >
-            <option value="eur" default>Euro</option>
-            <option value="usd">US Dollar</option>
-            <option value="gbp">British Pound</option>
-          </select>
-          <span v-if="currencyError" class="error">{{ currencyError }}</span>
-        </div>
-        <div class="form-group">
-          <label for="country">Pais:</label>
+          <label for="country">{{ $t("tax_country") }}</label>
           <select
             v-model="formData.country"
             id="country"
             class="input-field"
             required
           >
-            <option value="es" default>Spain</option>
-            <option value="us">United States</option>
-            <option value="uk">United Kingdom</option>
+            <option value="es" default>{{ $t("spain") }}</option>
+            <option value="us" disabled>{{ $t("united_states") }}</option>
+            <option value="uk" disabled>{{ $t("united_kingdom") }}</option>
           </select>
           <span v-if="countryError" class="error">{{ countryError }}</span>
         </div>
         <div v-if="regionsForSelectedCountry.length > 0" class="form-group">
-          <label for="region">Region:</label>
+          <label for="region">{{ $t("autonomous_region") }}</label>
           <select
             v-model="formData.region"
             id="region"
@@ -61,18 +47,7 @@
           <span v-if="regionError" class="error">{{ regionError }}</span>
         </div>
         <div class="form-group">
-          <label for="ageInput">Edad:</label>
-          <input
-            type="number"
-            v-model.number="formData.age"
-            id="ageInput"
-            class="input-field"
-            required
-          />
-          <span v-if="numberError" class="error">{{ numberError }}</span>
-        </div>
-        <div class="form-group">
-          <label for="rentInput">Alquiler anual:</label>
+          <label for="rentInput">{{ $t("anual_rent") }}</label>
           <input
             type="number"
             v-model.number="formData.anual_rent"
@@ -83,7 +58,9 @@
           <span v-if="numberError" class="error">{{ numberError }}</span>
         </div>
         <div class="form-group">
-          <label for="healthInput">Salud:</label>
+          <label for="healthInput">
+            {{ $t("health_expenses") }}
+          </label>
           <input
             type="number"
             v-model.number="formData.health"
@@ -99,12 +76,12 @@
             :disabled="isSubmitDisabled"
             class="submit-button"
           >
-            Calcular
+            {{ $t("calculate") }}
           </button>
         </div>
       </form>
       <div v-if="response" class="response-container">
-        <h2>Salario neto:</h2>
+        <h2>{{ $t("net_salary_title") }}</h2>
         <!-- <div class="response">{{ response }}</div> -->
         <div class="salary-items">
           <!-- Loop through data to create multiple instances of DataDisplay component -->
@@ -133,18 +110,18 @@ export default {
   data() {
     return {
       boxDataItems: [
-        { number: 10, text: "IRPF Number" },
-        { number: 20, text: "Net Salary Number" },
-        { number: 30, text: "IRPF Percentage" },
-        { number: 10, text: "Loan Rent" },
-        { number: 10, text: "Basic Spendings" },
-        { number: 10, text: "Personal Spendings" },
-        { number: 10, text: "Savings" },
-        { number: 10, text: "Investments" },
+        { number: 10, text: this.$t("annual_irpf_cost") },
+        { number: 20, text: this.$t("net_salary_per_month") },
+        { number: 30, text: this.$t("irpf_percentage") },
+        { number: 10, text: this.$t("loan_rent") },
+        { number: 10, text: this.$t("basic_spendings") },
+        { number: 10, text: this.$t("personal_spendings") },
+        { number: 10, text: this.$t("savings") },
+        { number: 10, text: this.$t("investments") },
       ],
       scripts: [],
       formData: {
-        salary: 1,
+        salary: 30000,
         currency: "eur",
         country: "es",
         region: null,

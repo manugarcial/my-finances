@@ -68,8 +68,6 @@ router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const user = store.state.user; // This should retrieve the user from the store
 
-  console.log("Checking user in router guard:", user); // Debugging line
-
   if (requiresAuth && !user) {
     next("/login");
   } else {

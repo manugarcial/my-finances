@@ -50,10 +50,6 @@ export const userlogout = (): void => {
  *
  * @returns The user data or null if no user is logged in
  */
-// export const getCurrentUser = (): User | null => {
-//   const user = localStorage.getItem("user");
-//   return user ? (JSON.parse(user) as User) : null;
-// };
 export const getCurrentUser = (store: Store<any>): User | null => {
   console.log("get current user API");
   console.log(store.state.user);
