@@ -1,14 +1,14 @@
 <template>
   <div class="login-container">
-    <h1>Login</h1>
+    <h1>{{ $t("login") }}</h1>
     <form @submit.prevent="handleLogin">
-      <input v-model="username" placeholder="Username" />
+      <input v-model="username" :placeholder="$t('username')" />
 
       <div class="password-container">
         <input
           :type="passwordVisible ? 'text' : 'password'"
           v-model="password"
-          placeholder="Password"
+          :placeholder="$t('password')"
           class="password-input"
         />
         <button
@@ -19,14 +19,16 @@
           {{ passwordVisible ? "🙈" : "👁️" }}
         </button>
       </div>
-      <button type="submit">Login</button>
+      <button type="submit">{{ $t("login") }}</button>
     </form>
     <div class="additional-options">
       <p>
-        <router-link to="/register" class="link">Register</router-link>
-        or
+        <router-link to="/register" class="link">
+          {{ $t("register") }}
+        </router-link>
+        {{ $t("or") }}
         <router-link to="/reset-password" class="link">
-          Reset Password (Not available yet)
+          {{ $t("reset_pass") }}
         </router-link>
       </p>
     </div>
@@ -48,14 +50,14 @@ export default {
     async handleLogin() {
       try {
         const response = await userlogin(this.username, this.password);
-        console.log("userlogin response in hadle login");
-        console.log(response);
+        // console.log("userlogin response in hadle login");
+        // console.log(response);
         // const userData = response.data; // Assuming this is the expected user object
         // console.log("userlogin response in hadle login DATA");
         // console.log(userData);
 
         if (response) {
-          console.log("User data received from API:", response);
+          // console.log("User data received from API:", response);
           const login_user = {
             username: this.username,
             access_token: response,

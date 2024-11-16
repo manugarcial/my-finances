@@ -6,9 +6,9 @@
         <div class="card">
           <img :src="section.image" alt="Section Image" class="card-image" />
           <div class="card-content">
-            <h3>{{ section.title }}</h3>
-            <p>{{ section.description }}</p>
-            <a :href="section.link" class="card-link">Learn More</a>
+            <h3>{{ $t(section.title) }}</h3>
+            <p>{{ $t(section.description) }}</p>
+            <a :href="section.link" class="card-link">{{ $t("learn_more") }}</a>
           </div>
         </div>
       </div>
@@ -18,45 +18,41 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { useI18n } from "vue-i18n";
 
 @Options({})
 export default class HomeView extends Vue {
   // Sections data with image, title, description, and link
   sections = [
     {
-      // image: require("@/assets/section1.jpg")
-      image: "https://picsum.photos/id/237/200/300",
-      title: "Section 1",
-      description: "Description for Section 1.",
-      link: "/section1",
+      image: require("@/assets/salary_calculation.jpeg"),
+      title: "net_salary_title",
+      description: "description_for_net_salary",
+      link: "/net-salary",
     },
     {
-      // image: require("@/assets/section2.jpg"),
-      image: "https://picsum.photos/id/237/200/300",
-      title: "Section 2",
-      description: "Description for Section 2.",
-      link: "/section2",
+      image: require("@/assets/mortgage_calculation.jpeg"),
+      title: "mortgage",
+      description: "description_for_mortgage",
+      link: "/mortgage",
     },
     {
-      // image: require("@/assets/section3.jpg"),
-      image: "https://picsum.photos/id/237/200/300",
-      title: "Section 3",
-      description: "Description for Section 3.",
-      link: "/section3",
+      image: require("@/assets/stock_list.jpeg"),
+      title: "my_stocks",
+      description: "description_for_my_stocks",
+      link: "/stocks",
     },
     {
-      // image: require("@/assets/section4.jpg"),
-      image: "https://picsum.photos/id/237/200/300",
-      title: "Section 4",
-      description: "Description for Section 4.",
-      link: "/section4",
+      image: require("@/assets/stock_search.jpeg"),
+      title: "stock_search",
+      description: "description_for_stock_search",
+      link: "/stocks-search",
     },
     {
-      // image: require("@/assets/section5.jpg"),
-      image: "https://picsum.photos/id/237/200/300",
-      title: "Section 5",
-      description: "Description for Section 5.",
-      link: "/section5",
+      image: require("@/assets/global_data.jpeg"),
+      title: "global_economy_data",
+      description: "description_for_global_economy_data",
+      link: "/global-economy-data",
     },
   ];
 }

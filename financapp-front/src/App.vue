@@ -11,8 +11,11 @@
         <span class="bar"></span>
         <span class="bar"></span>
       </button>
-      <!-- <img src="path/to/your/icon.png" alt="App Icon" class="app-icon" /> -->
-      <div class="app-icon">Financapp</div>
+      <div class="app-icon">
+        <router-link to="/" class="navbar-item" @click="closeMenu">
+          Financapp
+        </router-link>
+      </div>
     </div>
 
     <div :class="['navbar-menu', { 'is-active': menuActive }]" ref="navbarMenu">

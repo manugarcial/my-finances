@@ -1,38 +1,58 @@
 <template>
   <div class="register-container">
-    <h1>Register</h1>
+    <h1>{{ $t("register") }}</h1>
     <form @submit.prevent="registerUser">
       <div class="form-group">
-        <label for="name">Name:</label>
-        <input type="text" id="name" v-model="formData.name" required />
+        <input
+          type="text"
+          id="name"
+          :placeholder="$t('name')"
+          v-model="formData.name"
+          required
+        />
       </div>
 
       <div class="form-group">
-        <label for="surname">Surname:</label>
-        <input type="text" id="surname" v-model="formData.surname" required />
+        <input
+          type="text"
+          id="surname"
+          :placeholder="$t('surname')"
+          v-model="formData.surname"
+          required
+        />
       </div>
 
       <div class="form-group">
-        <label for="username">Username:</label>
-        <input type="text" id="username" v-model="formData.username" required />
+        <input
+          type="text"
+          id="username"
+          :placeholder="$t('username')"
+          v-model="formData.username"
+          required
+        />
       </div>
 
       <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" id="email" v-model="formData.email" required />
+        <input
+          type="email"
+          id="email"
+          :placeholder="$t('email')"
+          v-model="formData.email"
+          required
+        />
       </div>
 
       <div class="form-group">
-        <label for="password">Password:</label>
         <input
           type="password"
           id="password"
+          :placeholder="$t('password')"
           v-model="formData.password"
           required
         />
       </div>
 
-      <button type="submit">Register</button>
+      <button type="submit">{{ $t("register") }}</button>
 
       <div v-if="message" class="message">{{ message }}</div>
     </form>

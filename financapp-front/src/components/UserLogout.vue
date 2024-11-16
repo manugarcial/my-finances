@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button v-if="isLoggedIn" @click="logout">Logout</button>
+    <button v-if="isLoggedIn" @click="logout">{{ $t("logout") }}</button>
     <router-view />
   </div>
 </template>
