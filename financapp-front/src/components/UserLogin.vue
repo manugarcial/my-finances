@@ -21,6 +21,15 @@
       </div>
       <button type="submit">Login</button>
     </form>
+    <div class="additional-options">
+      <p>
+        <router-link to="/register" class="link">Register</router-link>
+        or
+        <router-link to="/reset-password" class="link">
+          Reset Password (Not available yet)
+        </router-link>
+      </p>
+    </div>
   </div>
 </template>
 

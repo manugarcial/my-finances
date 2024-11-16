@@ -17,39 +17,54 @@
 
     <div :class="['navbar-menu', { 'is-active': menuActive }]" ref="navbarMenu">
       <router-link to="/" class="navbar-item" @click="closeMenu">
-        Home
+        {{ $t("home") }}
       </router-link>
       <router-link to="/net-salary" class="navbar-item" @click="closeMenu">
-        Net Salary
+        {{ $t("net_salary_title") }}
       </router-link>
       <router-link to="/mortgage" class="navbar-item" @click="closeMenu">
-        Mortgage
+        {{ $t("mortgage") }}
       </router-link>
       <router-link to="/stocks" class="navbar-item" @click="closeMenu">
-        Stocks
+        {{ $t("my_stocks") }}
       </router-link>
       <router-link to="/stocks-search" class="navbar-item" @click="closeMenu">
-        Stocks Search
+        {{ $t("stock_search") }}
       </router-link>
       <router-link
         to="/global-economy-data"
         class="navbar-item"
         @click="closeMenu"
       >
-        Global Economy Data
+        {{ $t("global_economy_data") }}
       </router-link>
     </div>
-    <div class="navbar-item language-selector" @click="toggleDropdown">
-      <span>{{ currentLanguage }}</span>
-      <div v-if="dropdownOpen" class="dropdown">
-        <span
-          v-for="(label, code) in languages"
-          :key="code"
-          class="dropdown-item"
-          @click="selectLanguage(code)"
+    <div class="left-side-menu">
+      <router-link to="/login" class="navbar-item user-icon" @click="closeMenu">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="white"
         >
-          {{ label }}
-        </span>
+          <path
+            d="M12 12c2.67 0 8 1.34 8 4v2H4v-2c0-2.66 5.33-4 8-4zm0-2c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"
+          />
+        </svg>
+      </router-link>
+      <div class="navbar-item language-selector" @click="toggleDropdown">
+        <span>{{ currentLanguage }}</span>
+        <div v-if="dropdownOpen" class="dropdown">
+          <span
+            v-for="(label, code) in languages"
+            :key="code"
+            class="dropdown-item"
+            @click="selectLanguage(code)"
+          >
+            {{ label }}
+          </span>
+        </div>
       </div>
     </div>
   </nav>
@@ -177,9 +192,7 @@ nav {
   cursor: pointer;
   color: white;
   font-weight: bold;
-  margin-left: 15px;
   display: flex;
-  align-items: center;
 }
 
 .language-selector span {
@@ -250,5 +263,21 @@ nav {
 
 .navbar-item:hover {
   background-color: #555; /* Hover effect */
+}
+
+.left-side-menu {
+  display: flex;
+}
+
+.user-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: white; /* Ensure the icon is white */
+  transition: transform 0.2s ease, fill 0.2s ease;
+}
+
+.user-icon svg:hover {
+  transform: scale(1.1);
+  fill: #42b983; /* Optional hover color */
 }
 </style>

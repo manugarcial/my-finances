@@ -51,7 +51,11 @@ export const userlogout = (): void => {
  * @returns The user data or null if no user is logged in
  */
 export const getCurrentUser = (store: Store<any>): User | null => {
-  console.log("get current user API");
-  console.log(store.state.user);
+  // console.log("get current user API");
+  // console.log(store.state.user);
   return store.state.user || null;
 };
+
+// export const sendPasswordReset = async (email) => {
+//   return await axios.post("/api/reset-password", { email });
+// };

@@ -9,8 +9,8 @@ import { createI18n } from 'vue-i18n'
 // Translations
 const messages = {
     en: {
-        net_salary_title: 'Net Salary Calculation',
-        mortgage: 'Mortgage',
+        net_salary_title: 'Net Salary calculation',
+        mortgage: 'Mortgage calculation',
         anual_salary: "Anual gross salary",
         annual_irpf_cost: "Annual IRPF Cost",
         net_salary_per_month: "Net Salary per Month",
@@ -44,7 +44,11 @@ const messages = {
         total_expenses_no_cancel: "Total expense without anual mortgage cancelations",
         total_expenses_with_cancel: "Total expense with anual mortgage cancelations",
         minimun_resell_price: "Minimun resell price needed",
-        resell_perc_rise: "Resell percentage rise needed"
+        resell_perc_rise: "Resell percentage rise needed",
+        home: "Home",
+        my_stocks: "My stocks list",
+        stock_search: "Stock search",
+        global_economy_data: "Global economy data"
     },
     es: {
         net_salary_title: 'Cálculo de salario neto',
@@ -82,7 +86,11 @@ const messages = {
         total_expenses_no_cancel: "Gastos totales sin cancelaciones anuales de la hipoteca",
         total_expenses_with_cancel: "Gastos totales con cancelaciones anuales de la hipoteca",
         minimun_resell_price: "Precio mínimo de reventa",
-        resell_perc_rise: "Porcentaje mínimo de reventa"
+        resell_perc_rise: "Porcentaje mínimo de reventa",
+        home: "Principal",
+        my_stocks: "Mi lista de stocks",
+        stock_search: "Buscar stock",
+        global_economy_data: "Datos macroeconómicos"
     }
 }
 

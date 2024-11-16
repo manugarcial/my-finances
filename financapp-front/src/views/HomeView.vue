@@ -44,7 +44,20 @@ export default class HomeView extends Vue {
       description: "Description for Section 3.",
       link: "/section3",
     },
-    // Add more sections as needed
+    {
+      // image: require("@/assets/section4.jpg"),
+      image: "https://picsum.photos/id/237/200/300",
+      title: "Section 4",
+      description: "Description for Section 4.",
+      link: "/section4",
+    },
+    {
+      // image: require("@/assets/section5.jpg"),
+      image: "https://picsum.photos/id/237/200/300",
+      title: "Section 5",
+      description: "Description for Section 5.",
+      link: "/section5",
+    },
   ];
 }
 </script>
@@ -55,16 +68,28 @@ export default class HomeView extends Vue {
   padding: 20px;
 }
 
-/* Grid container */
 .grid-container {
-  display: grid;
-  gap: 20px;
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping to create multiple rows */
+  gap: 20px; /* Space between items */
+  justify-content: space-between; /* Ensure items span the entire row */
 }
 
-/* Card item styling */
 .grid-item {
+  flex: 1 1 calc(33.333% - 20px); /* Maximum 3 items per row */
+  max-width: calc(33.333% - 20px); /* Prevent items from exceeding 3 per row */
   display: flex;
   justify-content: center;
+}
+
+.grid-item:last-child:nth-child(3n + 1),
+.grid-item:nth-last-child(2):nth-child(3n + 1),
+.grid-item:nth-last-child(3):nth-child(3n + 1) {
+  flex: 1 1 100%; /* If fewer than 3 items in the last row, stretch them */
+}
+
+.grid-item:nth-last-child(2):nth-child(3n + 2) {
+  flex: 1 1 calc(50% - 20px); /* If 2 items, stretch them evenly */
 }
 
 .card {
@@ -76,7 +101,26 @@ export default class HomeView extends Vue {
   border-radius: 8px;
   transition: box-shadow 0.3s ease;
   background-color: #fff;
-  width: 300px;
+  width: 100%; /* Card width spans the grid item */
+  max-width: 300px; /* Optional: Limit card width */
+}
+
+.card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 900px) {
+  .grid-item {
+    flex: 1 1 calc(50% - 20px);
+    max-width: calc(50% - 20px);
+  }
+}
+
+@media (max-width: 600px) {
+  .grid-item {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
 }
 
 .card:hover {
@@ -113,18 +157,5 @@ export default class HomeView extends Vue {
 
 .card-link:hover {
   text-decoration: underline;
-}
-
-/* Responsive Grid Layout */
-@media (min-width: 600px) {
-  .grid-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 900px) {
-  .grid-container {
-    grid-template-columns: repeat(3, 1fr);
-  }
 }
 </style>
