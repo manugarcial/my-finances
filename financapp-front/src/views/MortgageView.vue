@@ -121,7 +121,6 @@
         </div>
       </form>
       <div v-if="response" class="response-container">
-        <h2>{{ $t("mortgage") }}</h2>
         <div class="mortgage-items">
           <div
             v-for="(item, index) in boxDataItems"

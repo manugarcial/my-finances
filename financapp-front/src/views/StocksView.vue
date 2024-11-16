@@ -83,7 +83,9 @@
       />
     </div>
     <!-- Add Stock Button -->
-    <button @click="openModal" class="submit-button">Add Stock</button>
+    <button v-if="!loading" @click="openModal" class="submit-button">
+      Add Stock
+    </button>
 
     <!-- Add Stock Modal -->
     <AddStockModal

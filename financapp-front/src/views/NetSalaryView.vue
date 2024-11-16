@@ -81,10 +81,7 @@
         </div>
       </form>
       <div v-if="response" class="response-container">
-        <h2>{{ $t("net_salary_title") }}</h2>
-        <!-- <div class="response">{{ response }}</div> -->
         <div class="salary-items">
-          <!-- Loop through data to create multiple instances of DataDisplay component -->
           <div
             v-for="(item, index) in boxDataItems"
             :key="index"
