@@ -136,4 +136,5 @@ zope.interface==6.1
 gunicorn==20.1.0
 flask_jwt_extended==4.6.0
 psycopg2-binary==2.9.6
+Flask-SQLAlchemy==3.0.0
 SQLAlchemy==2.0.18
