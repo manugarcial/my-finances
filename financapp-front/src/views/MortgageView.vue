@@ -12,7 +12,7 @@
             class="input-field"
             required
           />
-          <span v-if="numberError" class="error">{{ numberError }}</span>
+          <span v-if="capitalError" class="error">{{ capitalError }}</span>
         </div>
         <div class="form-group">
           <label for="interestInput">{{ $t("anual_interest") }}</label>
@@ -25,7 +25,7 @@
             min="0"
             required
           />
-          <span v-if="numberError" class="error">{{ numberError }}</span>
+          <span v-if="interestError" class="error">{{ interestError }}</span>
         </div>
         <div class="form-group">
           <label for="interestInput">{{ $t("mortgage_years") }}</label>
@@ -36,7 +36,7 @@
             class="input-field"
             required
           />
-          <span v-if="numberError" class="error">{{ numberError }}</span>
+          <span v-if="yearsError" class="error">{{ yearsError }}</span>
         </div>
         <div class="form-group">
           <label for="interestInput">{{ $t("additional_yearly_pay") }}</label>
@@ -47,7 +47,9 @@
             class="input-field"
             required
           />
-          <span v-if="numberError" class="error">{{ numberError }}</span>
+          <span v-if="additionalPaymentError" class="error">
+            {{ additionalPaymentError }}
+          </span>
         </div>
         <div class="form-group">
           <label for="interestInput">{{ $t("start_payment_year") }}</label>
@@ -58,7 +60,7 @@
             class="input-field"
             required
           />
-          <span v-if="numberError" class="error">{{ numberError }}</span>
+          <span v-if="startYearError" class="error">{{ startYearError }}</span>
         </div>
         <div class="form-group">
           <label for="interestInput">{{ $t("buy_selling_tax") }}</label>
@@ -69,7 +71,9 @@
             class="input-field"
             required
           />
-          <span v-if="numberError" class="error">{{ numberError }}</span>
+          <span v-if="purchaseTaxError" class="error">
+            {{ purchaseTaxError }}
+          </span>
         </div>
         <div class="form-group">
           <label for="interestInput">{{ $t("sell_price") }}</label>
@@ -82,7 +86,7 @@
             min="0"
             required
           />
-          <span v-if="numberError" class="error">{{ numberError }}</span>
+          <span v-if="sellPriceError" class="error">{{ sellPriceError }}</span>
         </div>
         <div class="form-group">
           <label for="interestInput">{{ $t("bank_loan") }}</label>
@@ -95,7 +99,9 @@
             min="0"
             required
           />
-          <span v-if="numberError" class="error">{{ numberError }}</span>
+          <span v-if="bankFinanceError" class="error">
+            {{ bankFinanceError }}
+          </span>
         </div>
         <div class="form-group">
           <label for="interestInput">{{ $t("agency_commission") }}</label>
@@ -108,7 +114,9 @@
             min="0"
             required
           />
-          <span v-if="numberError" class="error">{{ numberError }}</span>
+          <span v-if="agencyCommissionError" class="error">
+            {{ agencyCommissionError }}
+          </span>
         </div>
         <div class="form-group">
           <button
@@ -172,7 +180,48 @@ export default {
       response: null,
     };
   },
-  computed: {},
+  computed: {
+    capitalError() {
+      return this.validateCapital();
+    },
+    interestError() {
+      return this.validateInterest();
+    },
+    yearsError() {
+      return this.validateMortgageYears();
+    },
+    additionalPaymentError() {
+      return this.validateAdditionalYearlyPayment();
+    },
+    startYearError() {
+      return this.validateStartPaymentYear();
+    },
+    purchaseTaxError() {
+      return this.validatePurchaseTax();
+    },
+    sellPriceError() {
+      return this.validateSellPrice();
+    },
+    bankFinanceError() {
+      return this.validateBankFinancePercentage();
+    },
+    agencyCommissionError() {
+      return this.validateAgencyCommission();
+    },
+    isSubmitDisabled() {
+      return (
+        this.capitalError ||
+        this.interestError ||
+        this.yearsError ||
+        this.additionalPaymentError ||
+        this.startYearError ||
+        this.purchaseTaxError ||
+        this.sellPriceError ||
+        this.bankFinanceError ||
+        this.agencyCommissionError
+      );
+    },
+  },
   created() {
     // Use VUE_APP_API_BASE_URL from environment variables
     const apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
@@ -186,8 +235,49 @@ export default {
       });
   },
   methods: {
+    validateCapital() {
+      return this.formData.capital <= 0 ? this.$t("capital_error") : null;
+    },
+    validateInterest() {
+      return this.formData.interest < 0 ? this.$t("interest_error") : null;
+    },
+    validateMortgageYears() {
+      return this.formData.mortgage_years <= 0 ? this.$t("years_error") : null;
+    },
+    validateAdditionalYearlyPayment() {
+      return this.formData.additional_yearly_payment < 0
+        ? this.$t("additional_payment_error")
+        : null;
+    },
+    validateStartPaymentYear() {
+      return this.formData.start_payment_year <= 0
+        ? this.$t("start_year_error")
+        : null;
+    },
+    validatePurchaseTax() {
+      return this.formData.purchase_tax < 0
+        ? this.$t("purchase_tax_error")
+        : null;
+    },
+    validateSellPrice() {
+      return this.formData.sell_price <= 0 ? this.$t("sell_price_error") : null;
+    },
+    validateBankFinancePercentage() {
+      const value = this.formData.bank_finance_percentage;
+      return value <= 0 || value > 100 ? this.$t("bank_finance_error") : null;
+    },
+    validateAgencyCommission() {
+      const value = this.formData.agency_commission;
+      return value < 0 || value > 100
+        ? this.$t("agency_commission_error")
+        : null;
+    },
     async submitForm() {
       try {
+        if (this.isSubmitDisabled) {
+          console.error("Form validation failed");
+          return;
+        }
         const apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
         // Sending data to backend using axios
         const res = await axios.post(
@@ -363,6 +453,12 @@ h1.title {
   flex-basis: 25%; /* Each child takes up 25% of the container's width */
   box-sizing: border-box; /* Ensures padding and border are included in the width */
   padding: 10px;
+}
+
+.error {
+  color: #ff4d4d;
+  font-size: 14px;
+  margin-top: 5px;
 }
 
 /* Responsive Design */

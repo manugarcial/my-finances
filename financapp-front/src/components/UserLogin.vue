@@ -20,16 +20,17 @@
         </button>
       </div>
       <button type="submit">{{ $t("login") }}</button>
+      <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
     </form>
     <div class="additional-options">
       <p>
         <router-link to="/register" class="link">
           {{ $t("register") }}
         </router-link>
-        {{ $t("or") }}
+        <!-- {{ $t("or") }}
         <router-link to="/reset-password" class="link">
           {{ $t("reset_pass") }}
-        </router-link>
+        </router-link> -->
       </p>
     </div>
   </div>
@@ -44,20 +45,24 @@ export default {
       username: "",
       password: "",
       passwordVisible: false,
+      errorMessage: null,
     };
+  },
+  computed: {
+    isSubmitDisabled() {
+      return !this.username.trim() || !this.password.trim();
+    },
   },
   methods: {
     async handleLogin() {
+      if (this.isSubmitDisabled) {
+        this.errorMessage = this.$t("login_error_generic");
+        return;
+      }
       try {
         const response = await userlogin(this.username, this.password);
-        // console.log("userlogin response in hadle login");
-        // console.log(response);
-        // const userData = response.data; // Assuming this is the expected user object
-        // console.log("userlogin response in hadle login DATA");
-        // console.log(userData);
 
         if (response) {
-          // console.log("User data received from API:", response);
           const login_user = {
             username: this.username,
             access_token: response,
@@ -151,5 +156,20 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
   background-color: #0056b3;
+}
+
+.error {
+  color: #ff4d4d;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+button[type="submit"]:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 </style>

@@ -6,6 +6,9 @@ import router from "./router";
 import store from "./store";
 import { createI18n } from 'vue-i18n'
 
+// import english from './locales/en.js'
+// import es from './locales/es.json';
+
 // Translations
 const messages = {
     en: {
@@ -65,6 +68,31 @@ const messages = {
         name: "Name",
         surname: "Surname",
         email: "Email",
+        login_error_generic: "Invalid username or password",
+        name_error: "Name is required",
+        surname_error: "Surname is required",
+        username_error_empty: "Username is required",
+        username_error_short: "Username must be at least 3 characters long",
+        email_error_empty: "Email is required",
+        email_error_invalid: "Enter a valid email address",
+        password_error_empty: "Password is required",
+        password_error_short: "Password must be at least 6 characters long",
+        registration_failed: "Registration failed. Please try again",
+        salary_error: "Salary must be a positive number",
+        country_error: "Please select a country",
+        region_error: "Please select a region",
+        rent_error: "Annual rent must be zero or greater",
+        health_error: "Health expenses must be zero or greater",
+        capital_error: "Capital must be greater than 0",
+        interest_error: "Interest rate cannot be negative",
+        years_error: "Mortgage years must be greater than 0",
+        additional_payment_error: "Additional yearly payment cannot be negative.",
+        start_year_error: "Start payment year cannot be negative",
+        purchase_tax_error: "Purchase tax cannot be negative",
+        sell_price_error: "Sell price must be greater than 0",
+        bank_finance_error: "Bank finance percentage must be between 0 and 100",
+        agency_commission_error: "Agency commission must be between 0 and 100",
+        submit_error: "There was an error submitting the form"
     },
     es: {
         net_salary_title: 'Cálculo de salario neto',
@@ -123,6 +151,31 @@ const messages = {
         name: "Nombre",
         surname: "Apellidos",
         email: "Email",
+        login_error_generic: "Nombre de usuario o contraseña incorrectos",
+        name_error: "El nombre es obligatorio",
+        surname_error: "El apellido es obligatorio",
+        username_error_empty: "El nombre de usuario es obligatorio",
+        username_error_short: "El nombre de usuario debe tener al menos 3 caracteres",
+        email_error_empty: "El correo electrónico es obligatorio",
+        email_error_invalid: "Introduce una dirección de correo electrónico válida",
+        password_error_empty: "La contraseña es obligatoria",
+        password_error_short: "La contraseña debe tener al menos 6 caracteres",
+        registration_failed: "Error en el registro. Por favor, inténtalo de nuevo",
+        salary_error: "El salario debe ser un número positivo",
+        country_error: "Por favor, selecciona un país",
+        region_error: "Por favor, selecciona una región",
+        rent_error: "El alquiler anual debe ser igual o mayor que cero",
+        health_error: "Los gastos de salud deben ser iguales o mayores que cero",
+        capital_error: "El capital debe ser mayor que 0",
+        interest_error: "La tasa de interés no puede ser negativa",
+        years_error: "El número de años de la hipoteca debe ser mayor que 0",
+        additional_payment_error: "El pago adicional anual no puede ser negativo",
+        start_year_error: "El año de inicio del pago no puede ser negativo",
+        purchase_tax_error: "El impuesto de compra no puede ser negativo",
+        sell_price_error: "El precio de venta debe ser mayor que 0",
+        bank_finance_error: "El porcentaje de financiamiento del banco debe estar entre 0 y 100",
+        agency_commission_error: "La comisión de la agencia debe estar entre 0 y 100",
+        submit_error: "Hubo un error al enviar el formulario"
     }
 }
 

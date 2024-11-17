@@ -10,6 +10,7 @@
           v-model="formData.name"
           required
         />
+        <span v-if="nameError" class="error">{{ nameError }}</span>
       </div>
 
       <div class="form-group">
@@ -20,6 +21,7 @@
           v-model="formData.surname"
           required
         />
+        <span v-if="surnameError" class="error">{{ surnameError }}</span>
       </div>
 
       <div class="form-group">
@@ -30,6 +32,7 @@
           v-model="formData.username"
           required
         />
+        <span v-if="usernameError" class="error">{{ usernameError }}</span>
       </div>
 
       <div class="form-group">
@@ -40,6 +43,7 @@
           v-model="formData.email"
           required
         />
+        <span v-if="emailError" class="error">{{ emailError }}</span>
       </div>
 
       <div class="form-group">
@@ -50,6 +54,7 @@
           v-model="formData.password"
           required
         />
+        <span v-if="passwordError" class="error">{{ passwordError }}</span>
       </div>
 
       <button type="submit">{{ $t("register") }}</button>
@@ -75,8 +80,65 @@ export default {
       message: "",
     };
   },
+  computed: {
+    nameError() {
+      return this.validateName();
+    },
+    surnameError() {
+      return this.validateSurname();
+    },
+    usernameError() {
+      return this.validateUsername();
+    },
+    emailError() {
+      return this.validateEmail();
+    },
+    passwordError() {
+      return this.validatePassword();
+    },
+    isSubmitDisabled() {
+      return (
+        this.nameError ||
+        this.surnameError ||
+        this.usernameError ||
+        this.emailError ||
+        this.passwordError
+      );
+    },
+  },
   methods: {
+    validateName() {
+      return this.formData.name.trim() === "" ? this.$t("name_error") : null;
+    },
+    validateSurname() {
+      return this.formData.surname.trim() === ""
+        ? this.$t("surname_error")
+        : null;
+    },
+    validateUsername() {
+      const username = this.formData.username.trim();
+      if (username === "") return this.$t("username_error_empty");
+      if (username.length < 3) return this.$t("username_error_short");
+      return null;
+    },
+    validateEmail() {
+      const email = this.formData.email.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (email === "") return this.$t("email_error_empty");
+      if (!emailRegex.test(email)) return this.$t("email_error_invalid");
+      return null;
+    },
+    validatePassword() {
+      const password = this.formData.password;
+      if (password === "") return this.$t("password_error_empty");
+      if (password.length < 6) return this.$t("password_error_short");
+      return null;
+    },
     async registerUser() {
+      if (this.isSubmitDisabled) {
+        console.error("Form validation failed");
+        return;
+      }
       try {
         const apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
         const response = await axios.post(
@@ -131,5 +193,11 @@ button {
   margin-top: 1rem;
   color: #007bff;
   font-weight: bold;
+}
+
+.error {
+  color: #ff4d4d;
+  font-size: 14px;
+  margin-top: 5px;
 }
 </style>

@@ -9,6 +9,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from users.user_db_operations import user_login, user_register
 from stocks.stock_db_operations import insert_single_transaction
 import psycopg2
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text  # Needed for executing raw SQL queries
@@ -29,8 +31,16 @@ jwt = JWTManager(app)
 
 # Initialize the database
 db = SQLAlchemy(app)
+
+# Initialize Limiter
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["500 per day", "100 per hour"]
+)
     
 @app.route('/list_tables')
+@limiter.limit("1 per day")
 def list_tables():
     try:
         # Reflect the database schema to get all tables
@@ -42,6 +52,7 @@ def list_tables():
 
 # Register a new user (for demo purposes, use a database in production)
 @app.route('/register', methods=['POST'])
+@limiter.limit("3 per hour")
 def register():
     data = request.json
     username = data.get('username')
@@ -63,6 +74,7 @@ def register():
 
 # User login
 @app.route('/login', methods=['POST'])
+@limiter.limit("10 per minute")
 def login():
     username = request.json.get('username')
     password = request.json.get('password')
@@ -87,18 +99,8 @@ def protected():
     current_user = get_jwt_identity()
     return jsonify(logged_in_as=current_user), 200
 
-# @app.route('/')
-# def home():
-#     return jsonify({
-#         "scripts": [
-#             {"name": "irpf", "url": "/calculate_irpf.py"},
-#             {"name": "mortgage", "url": "/mortgage.py"},
-#             {"name": "stocks", "url": "/stocks_investment.py"},
-#             {"name": "single_stock", "url": "/single_stock.py"},
-#         ]
-#     })
-
 @app.route('/stocks_investment', methods=['POST'])
+@limiter.limit("5 per minute")
 def stocks():
     """
     Home endpoint to return available scripts.
@@ -119,21 +121,10 @@ def stocks():
         return jsonify({"error": str(e)}), 500
     
 @app.route('/add_stock', methods=['POST'])
+@limiter.limit("6 per minute")
 def add_stock():
     data = request.json
     try:
-        # print("data in add stock")
-        # print(data)
-        # print(data['user_id'])
-        # print(data['stock_symbol'])
-        # print(data['stock_index'])
-        # print(data['currency'])
-        # print(data['operation'])
-        # print(data['cost'])
-        # print(data['transaction_price'])
-        # print(data['stock_price'])
-        # print(data['timestamp'])
-        # print("-------------------------------")
         # Call the function to insert a new transaction
         insert_single_transaction(
             user_id=data['user_id'],
@@ -153,6 +144,7 @@ def add_stock():
         return jsonify({"error": "Failed to insert transaction"}), 500
     
 @app.route('/single_stock', methods=['POST'])
+@limiter.limit("5 per minute")
 def single_stock():
     try:
         data = request.get_json()
@@ -166,6 +158,7 @@ def single_stock():
         return jsonify({"error": str(e)}), 500
     
 @app.route('/calculate_irpf', methods=['POST'])
+@limiter.limit("30 per minute")
 def irpf():
     """
     Calculate IRPF based on the provided data.
@@ -219,6 +212,7 @@ def irpf():
         return jsonify({"error": str(e)}), 500
     
 @app.route('/calculate_mortgage', methods=['POST'])
+@limiter.limit("30 per minute")
 def mortgage():
     try:
         data = request.get_json()

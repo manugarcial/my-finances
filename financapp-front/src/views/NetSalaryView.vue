@@ -10,9 +10,10 @@
             v-model.number="formData.salary"
             id="numberInput"
             class="input-field"
+            @input="validateSalary"
             required
           />
-          <span v-if="numberError" class="error">{{ numberError }}</span>
+          <span class="error" v-if="errors.salary">{{ errors.salary }}</span>
         </div>
         <div class="form-group">
           <label for="country">{{ $t("tax_country") }}</label>
@@ -20,13 +21,14 @@
             v-model="formData.country"
             id="country"
             class="input-field"
+            @change="validateCountry"
             required
           >
             <option value="es" default>{{ $t("spain") }}</option>
             <option value="us" disabled>{{ $t("united_states") }}</option>
             <option value="uk" disabled>{{ $t("united_kingdom") }}</option>
           </select>
-          <span v-if="countryError" class="error">{{ countryError }}</span>
+          <span class="error" v-if="errors.country">{{ errors.country }}</span>
         </div>
         <div v-if="regionsForSelectedCountry.length > 0" class="form-group">
           <label for="region">{{ $t("autonomous_region") }}</label>
@@ -34,6 +36,7 @@
             v-model="formData.region"
             id="region"
             class="input-field"
+            @change="validateRegion"
             required
           >
             <option
@@ -44,7 +47,7 @@
               {{ region.name }}
             </option>
           </select>
-          <span v-if="regionError" class="error">{{ regionError }}</span>
+          <span class="error" v-if="errors.region">{{ errors.region }}</span>
         </div>
         <div class="form-group">
           <label for="rentInput">{{ $t("anual_rent") }}</label>
@@ -53,9 +56,12 @@
             v-model.number="formData.anual_rent"
             id="rentInput"
             class="input-field"
+            @input="validateAnualRent"
             required
           />
-          <span v-if="numberError" class="error">{{ numberError }}</span>
+          <span class="error" v-if="errors.anual_rent">
+            {{ errors.anual_rent }}
+          </span>
         </div>
         <div class="form-group">
           <label for="healthInput">
@@ -68,12 +74,13 @@
             class="input-field"
             required
           />
-          <span v-if="numberError" class="error">{{ numberError }}</span>
+          <span class="error" v-if="errors.health">{{ errors.health }}</span>
         </div>
         <div class="form-group">
           <button
             type="submit"
             :disabled="isSubmitDisabled"
+            @input="validateHealth"
             class="submit-button"
           >
             {{ $t("calculate") }}
@@ -206,51 +213,38 @@ export default {
         ],
       },
       response: null,
+      errors: {
+        salary: "",
+        country: "",
+        region: "",
+        anual_rent: "",
+        health: "",
+      },
     };
   },
   computed: {
-    // Returns the regions based on the selected country
+    // List regions based on selected country
     regionsForSelectedCountry() {
       return this.regions[this.formData.country] || [];
     },
-    // Validation for number input
-    numberError() {
-      if (this.formData.number === null || this.formData.number === "") {
-        return "Number is required.";
-      }
-      if (this.formData.number <= 0) {
-        return "Number must be greater than zero.";
-      }
-      return null;
-    },
-    // Validation for currency selector
-    currencyError() {
-      if (this.formData.currency === "") {
-        return "Currency selection is required.";
-      }
-      return null;
-    },
-    // Validation for country selector
-    countryError() {
-      if (this.formData.country === "") {
-        return "Country selection is required.";
-      }
-      return null;
-    },
-    // Validation for region selector
-    regionError() {
-      if (this.formData.region === "") {
-        return "Region selection is required.";
-      }
-      return null;
-    },
     // Check overall form validity
     isFormValid() {
-      return !this.numberError && !this.currencyError;
+      return (
+        !this.errors.salary &&
+        !this.errors.country &&
+        !this.errors.region &&
+        !this.errors.anual_rent &&
+        !this.errors.health &&
+        this.formData.salary > 0 &&
+        this.formData.country &&
+        (this.formData.region || this.regionsForSelectedCountry.length === 0) &&
+        this.formData.anual_rent >= 0 &&
+        this.formData.health >= 0
+      );
     },
-    // Disable submit button if numberError exists or currency is not selected
+    // Disable the submit button if the form is invalid
     isSubmitDisabled() {
-      return this.numberError !== null || this.formData.currency === "";
+      return !this.isFormValid;
     },
   },
   created() {
@@ -265,7 +259,54 @@ export default {
       });
   },
   methods: {
+    validateSalary() {
+      if (!this.formData.salary || this.formData.salary <= 0) {
+        this.errors.salary = this.$t("salary_error");
+      } else {
+        this.errors.salary = "";
+      }
+    },
+    validateCountry() {
+      if (!this.formData.country) {
+        this.errors.country = this.$t("country_error");
+      } else {
+        this.errors.country = "";
+      }
+    },
+    validateRegion() {
+      if (this.regionsForSelectedCountry.length > 0 && !this.formData.region) {
+        this.errors.region = this.$t("region_error");
+      } else {
+        this.errors.region = "";
+      }
+    },
+    validateAnualRent() {
+      if (this.formData.anual_rent < 0) {
+        this.errors.anual_rent = this.$t("rent_error");
+      } else {
+        this.errors.anual_rent = "";
+      }
+    },
+    validateHealth() {
+      if (this.formData.health < 0) {
+        this.errors.health = this.$t("health_error");
+      } else {
+        this.errors.health = "";
+      }
+    },
+    validateForm() {
+      this.validateSalary();
+      this.validateCountry();
+      this.validateRegion();
+      this.validateAnualRent();
+      this.validateHealth();
+    },
     async submitForm() {
+      this.validateForm();
+      if (!this.isFormValid) {
+        console.error("Validation failed.");
+        return;
+      }
       try {
         const apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
         // Sending data to backend using axios
